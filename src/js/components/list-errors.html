@@ -1,7 +1,15 @@
-<ul class="error-messages" ng-show="$ctrl.errors">
-  <div ng-repeat="(field, errors) in $ctrl.errors">
-    <li ng-repeat="error in errors">
-      {{field}} {{error}}
+<!-- 
+  Angular 12 template for list-errors component
+  Changes made:
+  - Replaced ng-show with *ngIf
+  - Replaced ng-repeat with *ngFor
+  - Updated syntax for object iteration using keyvalue pipe
+  - Changed $ctrl references to direct property access
+-->
+<ul class="error-messages" *ngIf="errors">
+  <div *ngFor="let field of errors | keyvalue">
+    <li *ngFor="let error of field.value">
+      {{field.key}} {{error}}
     </li>
   </div>
 </ul>

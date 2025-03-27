@@ -2,16 +2,22 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title ng-bind="pageTitle"></title>
+    <!-- Replaced ng-bind with Angular's Title service which will be used in components -->
+    <title>Conduit</title>
     <link href="//code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css">
     <link href="//fonts.googleapis.com/css?family=Titillium+Web:700|Source+Serif+Pro:400,700|Merriweather+Sans:400,700|Source+Sans+Pro:400,300,600,700,300italic,400italic,600italic,700italic" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="//demo.productionready.io/main.css">
+    <!-- Angular requires these meta tags -->
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
+    <!-- Replaced ui-view with app-root which is the selector for the root Angular component -->
+    <app-root></app-root>
 
-    <div ui-view></div>
-
+    <!-- Angular CLI will generate these bundle files -->
+    <script src="runtime.js"></script>
+    <script src="polyfills.js"></script>
     <script src="main.js"></script>
-
   </body>
 </html>

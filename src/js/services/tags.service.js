@@ -1,21 +1,28 @@
-export default class Tags {
-  constructor(JWT, AppConstants, $http, $q) {
-    'ngInject';
+// tags.service.ts
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
-    this._AppConstants = AppConstants;
-    this._$http = $http;
+// Import AppConstants from wherever it's defined in your new Angular structure
+import { AppConstants } from '../config/app.constants';
 
+@Injectable({
+  providedIn: 'root' // This makes the service available application-wide
+})
+export class TagsService {
+  
+  constructor(
+    private http: HttpClient,
+    private appConstants: AppConstants
+  ) {}
 
+  // Converted to return an Observable instead of a Promise
+  getAll(): Observable<string[]> {
+    return this.http.get<{tags: string[]}>(
+      `${this.appConstants.api}/tags`
+    ).pipe(
+      map(response => response.tags)
+    );
   }
-
-  getAll() {
-
-    return this._$http({
-      url: this._AppConstants.api + '/tags',
-      method: 'GET',
-    }).then((res) => res.data.tags);
-
-  }
-
-
 }

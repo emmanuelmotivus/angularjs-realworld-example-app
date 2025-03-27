@@ -1,21 +1,20 @@
-var gulp          = require('gulp');
-var notify        = require('gulp-notify');
-var source        = require('vinyl-source-stream');
-var browserify    = require('browserify');
-var babelify      = require('babelify');
-var ngAnnotate    = require('browserify-ngannotate');
-var browserSync   = require('browser-sync').create();
-var rename        = require('gulp-rename');
-var templateCache = require('gulp-angular-templatecache');
-var uglify        = require('gulp-uglify');
-var merge         = require('merge-stream');
+// Angular 12 updated gulpfile.js
+const gulp = require('gulp');
+const notify = require('gulp-notify');
+const browserSync = require('browser-sync').create();
+const { exec } = require('child_process');
+const merge = require('merge-stream');
+const uglify = require('gulp-uglify');
 
 // Where our files are located
-var jsFiles   = "src/js/**/*.js";
-var viewFiles = "src/js/**/*.html";
+// Note: Angular CLI will handle compilation of TypeScript files and templates
+const srcDir = "src";
+const distDir = "dist";
+const buildDir = "dist"; // Using Angular CLI's output directory
 
-var interceptErrors = function(error) {
-  var args = Array.prototype.slice.call(arguments);
+// Error handler
+const interceptErrors = function(error) {
+  const args = Array.prototype.slice.call(arguments);
 
   // Send error to notification center with gulp-notify
   notify.onError({
@@ -27,60 +26,69 @@ var interceptErrors = function(error) {
   this.emit('end');
 };
 
-
-gulp.task('browserify', ['views'], function() {
-  return browserify('./src/js/app.js')
-      .transform(babelify, {presets: ["es2015"]})
-      .transform(ngAnnotate)
-      .bundle()
-      .on('error', interceptErrors)
-      //Pass desired output filename to vinyl-source-stream
-      .pipe(source('main.js'))
-      // Start piping stream to tasks!
-      .pipe(gulp.dest('./build/'));
+// Build task - uses Angular CLI instead of browserify
+gulp.task('build-dev', function(done) {
+  // Run Angular CLI build command
+  exec('ng build', function(err, stdout, stderr) {
+    console.log(stdout);
+    console.error(stderr);
+    done(err);
+  });
 });
 
+// HTML task - copies index.html (though Angular CLI will handle this too)
 gulp.task('html', function() {
-  return gulp.src("src/index.html")
-      .on('error', interceptErrors)
-      .pipe(gulp.dest('./build/'));
+  return gulp.src(`${srcDir}/index.html`)
+    .on('error', interceptErrors)
+    .pipe(gulp.dest(buildDir));
 });
 
-gulp.task('views', function() {
-  return gulp.src(viewFiles)
-      .pipe(templateCache({
-        standalone: true
-      }))
-      .on('error', interceptErrors)
-      .pipe(rename("app.templates.js"))
-      .pipe(gulp.dest('./src/js/config/'));
+// Production build task
+gulp.task('build-prod', function(done) {
+  // Run Angular CLI production build
+  exec('ng build --configuration production', function(err, stdout, stderr) {
+    console.log(stdout);
+    console.error(stderr);
+    done(err);
+  });
 });
 
 // This task is used for building production ready
 // minified JS/CSS files into the dist/ folder
-gulp.task('build', ['html', 'browserify'], function() {
-  var html = gulp.src("build/index.html")
-                 .pipe(gulp.dest('./dist/'));
-
-  var js = gulp.src("build/main.js")
-               .pipe(uglify())
-               .pipe(gulp.dest('./dist/'));
-
-  return merge(html,js);
+// Note: Angular CLI already handles minification, but keeping this for compatibility
+gulp.task('build', gulp.series('build-prod'), function() {
+  // Angular CLI already handles these operations
+  // This is kept for backward compatibility
+  return gulp.src(`${distDir}/**/*`);
 });
 
-gulp.task('default', ['html', 'browserify'], function() {
-
-  browserSync.init(['./build/**/**.**'], {
-    server: "./build",
-    port: 4000,
+// Default task - development build with watch
+gulp.task('default', gulp.series('build-dev', function(done) {
+  browserSync.init({
+    server: buildDir,
+    port: 4200,
     notify: false,
     ui: {
-      port: 4001
+      port: 4201
     }
   });
 
-  gulp.watch("src/index.html", ['html']);
-  gulp.watch(viewFiles, ['views']);
-  gulp.watch(jsFiles, ['browserify']);
+  // Watch for changes and trigger rebuilds
+  // Note: Most file watching is now handled by Angular CLI
+  gulp.watch(`${srcDir}/**/*.html`, gulp.series('build-dev'));
+  gulp.watch(`${srcDir}/**/*.ts`, gulp.series('build-dev'));
+  gulp.watch(`${srcDir}/**/*.scss`, gulp.series('build-dev'));
+  
+  // Watch for changes in the build directory and reload the browser
+  gulp.watch(`${buildDir}/**/*`).on('change', browserSync.reload);
+  
+  done();
+}));
+
+// Legacy tasks maintained for backward compatibility
+// These are now no-ops or delegated to Angular CLI
+gulp.task('browserify', gulp.series('build-dev'));
+gulp.task('views', function(done) {
+  // No longer needed as Angular handles templates differently
+  done();
 });

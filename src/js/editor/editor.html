@@ -1,59 +1,51 @@
+<!-- editor.html - Upgraded from Angular 1.x to Angular 12 -->
 <div class="editor-page">
   <div class="container page">
     <div class="row">
       <div class="col-md-10 offset-md-1 col-xs-12">
 
-        <list-errors errors="$ctrl.errors"></list-errors>
+        <!-- Changed from list-errors to app-list-errors and updated input binding -->
+        <app-list-errors [errors]="errors"></app-list-errors>
 
-        <form>
-          <fieldset ng-disabled="$ctrl.isSubmitting">
+        <!-- Added [formGroup] to connect with the reactive form -->
+        <form [formGroup]="articleForm">
+          <!-- Changed ng-disabled to [disabled] -->
+          <fieldset [disabled]="isSubmitting">
 
             <fieldset class="form-group">
+              <!-- Changed ng-model to formControlName -->
               <input class="form-control form-control-lg"
-                ng-model="$ctrl.article.title"
+                formControlName="title"
                 type="text"
                 placeholder="Article Title" />
             </fieldset>
 
             <fieldset class="form-group">
+              <!-- Changed ng-model to formControlName -->
               <input class="form-control"
-                ng-model="$ctrl.article.description"
+                formControlName="description"
                 type="text"
                 placeholder="What's this article about?" />
             </fieldset>
 
             <fieldset class="form-group">
+              <!-- Changed ng-model to formControlName -->
               <textarea class="form-control"
                 rows="8"
-                ng-model="$ctrl.article.body"
+                formControlName="body"
                 placeholder="Write your article (in markdown)">
               </textarea>
             </fieldset>
 
             <fieldset class="form-group">
+              <!-- Changed ng-model to [(ngModel)] and added name attribute -->
+              <!-- Changed ng-keyup to (keyup.enter) -->
               <input class="form-control"
                 type="text"
                 placeholder="Enter tags"
-                ng-model="$ctrl.tagField"
-                ng-keyup="$event.keyCode == 13 && $ctrl.addTag()" />
+                [(ngModel)]="tagField"
+                [ngModelOptions]="{standalone: true}"
+                (keyup.enter)="addTag()" />
 
               <div class="tag-list">
-                <span ng-repeat="tag in $ctrl.article.tagList"
-                  class="tag-default tag-pill">
-                  <i class="ion-close-round" ng-click="$ctrl.removeTag(tag)"></i>
-                  {{ tag }}
-                </span>
-              </div>
-            </fieldset>
-
-            <button class="btn btn-lg pull-xs-right btn-primary" type="button" ng-click="$ctrl.submit()">
-              Publish Article
-            </button>
-
-          </fieldset>
-        </form>
-
-      </div>
-    </div>
-  </div>
-</div>
+                <!--

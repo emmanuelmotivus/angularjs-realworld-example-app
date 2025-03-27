@@ -1,17 +1,27 @@
+<!-- 
+  Angular 12 Component Template
+  Changes made:
+  - Replaced ui-sref with routerLink
+  - Replaced ng-src with [src]
+  - Replaced ng-bind with interpolation syntax {{ }}
+  - Removed $ctrl references (assuming properties are directly on component)
+  - Replaced date filter with Angular DatePipe
+-->
+
 <div class="article-meta">
-  <a ui-sref="app.profile.main({ username:$ctrl.article.author.username })">
-    <img ng-src="{{$ctrl.article.author.image}}" />
+  <a [routerLink]="['/profile', article.author.username]">
+    <img [src]="article.author.image" />
   </a>
 
   <div class="info">
     <a class="author"
-      ui-sref="app.profile.main({ username:$ctrl.article.author.username })"
-      ng-bind="$ctrl.article.author.username">
+      [routerLink]="['/profile', article.author.username]">
+      {{ article.author.username }}
     </a>
-    <span class="date"
-      ng-bind="$ctrl.article.createdAt | date: 'longDate' ">
+    <span class="date">
+      {{ article.createdAt | date: 'longDate' }}
     </span>
   </div>
 
-  <ng-transclude></ng-transclude>
+  <ng-content></ng-content>
 </div>

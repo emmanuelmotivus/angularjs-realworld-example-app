@@ -1,19 +1,27 @@
+<!-- 
+  Angular 12 template for article-preview component
+  Changes made:
+  - Replaced ui-sref with routerLink
+  - Replaced ng-bind with Angular interpolation syntax
+  - Replaced ng-repeat with *ngFor
+  - Removed $ctrl references in favor of direct property access
+-->
 <div class="article-preview">
-  <article-meta article="$ctrl.article">
+  <article-meta [article]="article">
     <favorite-btn
-      article="$ctrl.article"
+      [article]="article"
       class="pull-xs-right">
-      {{$ctrl.article.favoritesCount}}
+      {{article.favoritesCount}}
     </favorite-btn>
   </article-meta>
 
-  <a ui-sref="app.article({ slug: $ctrl.article.slug })" class="preview-link">
-    <h1 ng-bind="$ctrl.article.title"></h1>
-    <p ng-bind="$ctrl.article.description"></p>
+  <a [routerLink]="['/article', article.slug]" class="preview-link">
+    <h1>{{article.title}}</h1>
+    <p>{{article.description}}</p>
     <span>Read more...</span>
     <ul class="tag-list">
       <li class="tag-default tag-pill tag-outline"
-        ng-repeat="tag in $ctrl.article.tagList">
+        *ngFor="let tag of article.tagList">
         {{tag}}
       </li>
     </ul>

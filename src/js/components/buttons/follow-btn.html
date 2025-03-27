@@ -1,10 +1,18 @@
+<!-- 
+  Angular 12 component template
+  Changes made:
+  - Replaced ng-class with [ngClass]
+  - Replaced ng-click with (click)
+  - Replaced $ctrl references with direct property references
+  - Changed binding syntax from {{ $ctrl.user.following ? 'Unfollow' : 'Follow' }} to use Angular's binding
+-->
 <button
   class="btn btn-sm action-btn"
-  ng-class="{ 'disabled': $ctrl.isSubmitting,
-              'btn-outline-secondary': !$ctrl.user.following,
-              'btn-secondary': $ctrl.user.following }"
-  ng-click="$ctrl.submit()">
+  [ngClass]="{ 'disabled': isSubmitting,
+              'btn-outline-secondary': !user.following,
+              'btn-secondary': user.following }"
+  (click)="submit()">
   <i class="ion-plus-round"></i>
   &nbsp;
-  {{ $ctrl.user.following ? 'Unfollow' : 'Follow' }} {{ $ctrl.user.username }}
+  {{ user.following ? 'Unfollow' : 'Follow' }} {{ user.username }}
 </button>

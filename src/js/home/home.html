@@ -1,9 +1,10 @@
- <div class="home-page">
+<div class="home-page">
 
   <!-- Splash banner that only shows when not logged in -->
-  <div class="banner" show-authed="false">
+  <!-- Replaced show-authed directive with *ngIf and authentication service -->
+  <div class="banner" *ngIf="!isAuthenticated">
     <div class="container">
-      <h1 class="logo-font" ng-bind="::$ctrl.appName | lowercase"></h1>
+      <h1 class="logo-font">{{ appName | lowercase }}</h1>
       <p>A place to share your knowledge.</p>
     </div>
   </div>
@@ -18,25 +19,27 @@
         <div class="feed-toggle">
           <ul class="nav nav-pills outline-active">
 
-            <li class="nav-item" show-authed="true">
+            <!-- Replaced show-authed with *ngIf -->
+            <li class="nav-item" *ngIf="isAuthenticated">
               <a href="" class="nav-link"
-                ng-class="{ active: $ctrl.listConfig.type === 'feed' }"
-                ng-click="$ctrl.changeList({ type: 'feed' })">
+                [ngClass]="{ active: listConfig.type === 'feed' }"
+                (click)="changeList({ type: 'feed' })">
                 Your Feed
               </a>
             </li>
 
             <li class="nav-item">
               <a href="" class="nav-link"
-                ng-class="{ active: $ctrl.listConfig.type === 'all' && !$ctrl.listConfig.filters }"
-                ng-click="$ctrl.changeList({ type: 'all' })">
+                [ngClass]="{ active: listConfig.type === 'all' && !listConfig.filters }"
+                (click)="changeList({ type: 'all' })">
                 Global Feed
               </a>
             </li>
 
-            <li class="nav-item" ng-show="$ctrl.listConfig.filters.tag">
+            <!-- Replaced ng-show with *ngIf -->
+            <li class="nav-item" *ngIf="listConfig.filters?.tag">
               <a href="" class="nav-link active">
-                <i class="ion-pound"></i> {{$ctrl.listConfig.filters.tag}}
+                <i class="ion-pound"></i> {{listConfig.filters.tag}}
               </a>
             </li>
 
@@ -44,7 +47,8 @@
         </div>
 
         <!-- List the current articles -->
-        <article-list limit="10" list-config="$ctrl.listConfig"></article-list>
+        <!-- Changed component binding syntax -->
+        <app-article-list [limit]="10" [listConfig]="listConfig"></app-article-list>
 
       </div>
 
@@ -54,20 +58,23 @@
 
           <p>Popular Tags</p>
 
-          <div class="tag-list" ng-show="$ctrl.tags">
+          <!-- Replaced ng-show with *ngIf -->
+          <div class="tag-list" *ngIf="tags">
             <a href="" class="tag-default tag-pill"
-              ng-click="$ctrl.changeList({ type: 'all', filters: { tag: tagName } })"
-              ng-repeat="tagName in $ctrl.tags"
-              ng-bind="tagName">
+              (click)="changeList({ type: 'all', filters: { tag: tagName } })"
+              *ngFor="let tagName of tags">
+              {{tagName}}
             </a>
           </div>
 
-          <div ng-show="!$ctrl.tagsLoaded">
+          <!-- Replaced ng-show with *ngIf -->
+          <div *ngIf="!tagsLoaded">
             Loading tags...
           </div>
 
+          <!-- Replaced ng-show with *ngIf -->
           <div class="post-preview"
-            ng-show="$ctrl.tagsLoaded && !$ctrl.tags.length">
+            *ngIf="tagsLoaded && !tags?.length">
             No tags are here... yet.
           </div>
 

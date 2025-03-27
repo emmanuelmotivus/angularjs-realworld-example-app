@@ -1,9 +1,18 @@
-let ArticleMeta= {
-  bindings: {
-    article: '='
-  },
-  transclude: true,
-  templateUrl: 'components/article-helpers/article-meta.html'
-};
+// Import necessary Angular decorators
+import { Component, Input } from '@angular/core';
 
-export default ArticleMeta;
+/**
+ * ArticleMetaComponent - Upgraded from AngularJS component to Angular component
+ * Changes:
+ * - Added @Component decorator with selector and templateUrl
+ * - Changed bindings to @Input property
+ * - Removed transclude (Angular content projection is used differently)
+ */
+@Component({
+  selector: 'app-article-meta',
+  templateUrl: './article-meta.component.html'
+})
+export class ArticleMetaComponent {
+  // Changed from bindings: { article: '=' } to @Input()
+  @Input() article: any;
+}

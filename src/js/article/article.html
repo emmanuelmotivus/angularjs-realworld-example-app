@@ -4,11 +4,12 @@
   <div class="banner">
     <div class="container">
 
-      <h1 ng-bind="::$ctrl.article.title"></h1>
+      <!-- Replaced ng-bind with interpolation -->
+      <h1>{{ article.title }}</h1>
 
       <div class="article-meta">
         <!-- Show author info + favorite & follow buttons -->
-        <article-actions article="$ctrl.article"></article-actions>
+        <app-article-actions [article]="article"></app-article-actions>
 
       </div>
 
@@ -24,11 +25,13 @@
     <div class="row article-content">
       <div class="col-xs-12">
 
-        <div ng-bind-html="::$ctrl.article.body"></div>
+        <!-- Replaced ng-bind-html with [innerHTML] -->
+        <div [innerHTML]="article.body"></div>
 
         <ul class="tag-list">
+          <!-- Replaced ng-repeat with *ngFor -->
           <li class="tag-default tag-pill tag-outline"
-            ng-repeat="tag in ::$ctrl.article.tagList">
+            *ngFor="let tag of article.tagList">
             {{ tag }}
           </li>
         </ul>
@@ -41,7 +44,7 @@
     <div class="article-actions">
 
       <!-- Show author info + favorite & follow buttons -->
-      <article-actions article="$ctrl.article"></article-actions>
+      <app-article-actions [article]="article"></app-article-actions>
 
     </div>
 
@@ -49,18 +52,23 @@
     <div class="row">
       <div class="col-xs-12 col-md-8 offset-md-2">
 
-        <div show-authed="true">
-          <list-errors from="$ctrl.commentForm.errors"></list-errors>
-          <form class="card comment-form" ng-submit="$ctrl.addComment()">
-            <fieldset ng-disabled="$ctrl.commentForm.isSubmitting">
+        <!-- Replaced show-authed directive with *ngIf and auth service -->
+        <div *ngIf="isAuthenticated">
+          <app-list-errors [errors]="commentForm.errors"></app-list-errors>
+          <!-- Replaced ng-submit with (submit) event binding -->
+          <form class="card comment-form" (submit)="addComment()">
+            <!-- Replaced ng-disabled with [disabled] -->
+            <fieldset [disabled]="commentForm.isSubmitting">
               <div class="card-block">
                 <textarea class="form-control"
                   placeholder="Write a comment..."
                   rows="3"
-                  ng-model="$ctrl.commentForm.body"></textarea>
+                  [(ngModel)]="commentForm.body"
+                  name="body"></textarea>
               </div>
               <div class="card-footer">
-                <img ng-src="{{::$ctrl.currentUser.image}}" class="comment-author-img" />
+                <!-- Replaced ng-src with [src] -->
+                <img [src]="currentUser.image" class="comment-author-img" />
                 <button class="btn btn-sm btn-primary" type="submit">
                  Post Comment
                 </button>
@@ -69,14 +77,17 @@
           </form>
         </div>
 
-        <div show-authed="false">
-          <a ui-sref="app.login">Sign in</a> or <a ui-sref="app.register">sign up</a> to add comments on this article.
+        <!-- Replaced show-authed directive with *ngIf and auth service -->
+        <div *ngIf="!isAuthenticated">
+          <!-- Replaced ui-sref with routerLink -->
+          <a [routerLink]="['/login']">Sign in</a> or <a [routerLink]="['/register']">sign up</a> to add comments on this article.
         </div>
 
-        <comment ng-repeat="cmt in $ctrl.comments"
-          data="cmt"
-          delete-cb="$ctrl.deleteComment(cmt.id, $index)">
-        </comment>
+        <!-- Replaced ng-repeat with *ngFor and updated component binding -->
+        <app-comment *ngFor="let cmt of comments; let i = index"
+          [comment]="cmt"
+          (deleteComment)="deleteComment(cmt.id, i)">
+        </app-comment>
 
 
       </div>

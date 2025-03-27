@@ -4,25 +4,55 @@
   "description": "Angular frontend for Conduit",
   "author": "Thinkster",
   "license": "MIT",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test"
+  },
   "dependencies": {
-    "angular": "^1.5.0-rc.2",
-    "angular-ui-router": "^0.4.2",
-    "babel-preset-es2015": "^6.3.13",
-    "babelify": "^7.2.0",
-    "browser-sync": "^2.11.1",
-    "browserify": "^13.0.0",
-    "browserify-ngannotate": "^2.0.0",
-    "gulp": "^3.9.1",
-    "gulp-angular-templatecache": "^1.8.0",
-    "gulp-notify": "^2.2.0",
-    "gulp-rename": "^1.2.2",
-    "gulp-uglify": "^1.5.3",
-    "gulp-util": "^3.0.7",
-    "marked": "^0.3.5",
-    "merge-stream": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0"
+    "@angular/animations": "^12.2.16",
+    "@angular/common": "^12.2.16",
+    "@angular/compiler": "^12.2.16",
+    "@angular/core": "^12.2.16",
+    "@angular/forms": "^12.2.16",
+    "@angular/platform-browser": "^12.2.16",
+    "@angular/platform-browser-dynamic": "^12.2.16",
+    "@angular/router": "^12.2.16",
+    "marked": "^4.0.10",
+    "rxjs": "^6.6.7",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.11.4"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^12.2.18",
+    "@angular/cli": "^12.2.18",
+    "@angular/compiler-cli": "^12.2.16",
+    "@types/jasmine": "~3.8.0",
+    "@types/marked": "^4.0.1",
+    "@types/node": "^12.20.55",
+    "jasmine-core": "~3.8.0",
+    "karma": "~6.3.0",
+    "karma-chrome-launcher": "~3.1.0",
+    "karma-coverage": "~2.0.3",
+    "karma-jasmine": "~4.0.0",
+    "karma-jasmine-html-reporter": "~1.7.0",
+    "typescript": "~4.3.5"
   },
   "overrides": {
     "graceful-fs": "^4.2.11"
   }
+  /* 
+  Changes made:
+  1. Removed AngularJS dependencies (angular, angular-ui-router)
+  2. Removed build tools related to AngularJS (babel, browserify, gulp, etc.)
+  3. Added Angular 12 core packages (@angular/*)
+  4. Added RxJS and Zone.js which are required for Angular
+  5. Added TypeScript and related type definitions
+  6. Added Angular CLI and build tools
+  7. Added standard Angular scripts for development
+  8. Updated marked to a compatible version
+  9. Kept the overrides section for graceful-fs
+  */
 }

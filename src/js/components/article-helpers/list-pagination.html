@@ -1,12 +1,21 @@
+<!-- 
+  Angular 12 template file
+  Changes made:
+  - Replaced ng-class with [ngClass]
+  - Replaced ng-repeat with *ngFor
+  - Replaced ng-click with (click)
+  - Replaced $ctrl references with direct component property references
+  - Replaced href="" with href="javascript:void(0)" to prevent page reload
+-->
 <nav>
   <ul class="pagination">
 
     <li class="page-item"
-      ng-class="{active: pageNumber === $ctrl.currentPage }"
-      ng-repeat="pageNumber in $ctrl.pageRange($ctrl.totalPages)"
-      ng-click="$ctrl.changePage(pageNumber)">
+      [ngClass]="{active: pageNumber === currentPage }"
+      *ngFor="let pageNumber of pageRange(totalPages)"
+      (click)="changePage(pageNumber)">
 
-      <a class="page-link" href="">{{ pageNumber }}</a>
+      <a class="page-link" href="javascript:void(0)">{{ pageNumber }}</a>
 
     </li>
 
