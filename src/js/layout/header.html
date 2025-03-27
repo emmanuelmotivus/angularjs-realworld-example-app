@@ -1,80 +1,94 @@
 <nav class="navbar navbar-light">
   <div class="container">
 
+    <!-- 
+      Replaced ui-sref with routerLink
+      Replaced ng-bind with interpolation and lowercase pipe
+    -->
     <a class="navbar-brand"
-      ui-sref="app.home"
-      ng-bind="::$ctrl.appName | lowercase">
+      [routerLink]="['/']">
+      {{ appName | lowercase }}
     </a>
 
-    <!-- Show this for logged out users -->
-    <ul show-authed="false"
+    <!-- 
+      Show this for logged out users 
+      Replaced show-authed directive with *ngIf
+      Replaced ui-sref with routerLink
+      Replaced ui-sref-active with routerLinkActive
+    -->
+    <ul *ngIf="!isAuthenticated"
       class="nav navbar-nav pull-xs-right">
 
       <li class="nav-item">
         <a class="nav-link"
-          ui-sref-active="active"
-          ui-sref="app.home">
+          routerLinkActive="active"
+          [routerLink]="['/']">
           Home
         </a>
       </li>
 
       <li class="nav-item">
         <a class="nav-link"
-          ui-sref-active="active"
-          ui-sref="app.login">
+          routerLinkActive="active"
+          [routerLink]="['/login']">
           Sign in
         </a>
       </li>
 
       <li class="nav-item">
         <a class="nav-link"
-          ui-sref-active="active"
-          ui-sref="app.register">
+          routerLinkActive="active"
+          [routerLink]="['/register']">
           Sign up
         </a>
       </li>
 
     </ul>
 
-    <!-- Show this for logged in users -->
-    <ul show-authed="true"
+    <!-- 
+      Show this for logged in users 
+      Replaced show-authed directive with *ngIf
+      Replaced ui-sref with routerLink
+      Replaced ui-sref-active with routerLinkActive
+      Replaced $ctrl references with component properties
+    -->
+    <ul *ngIf="isAuthenticated"
       class="nav navbar-nav pull-xs-right">
 
       <li class="nav-item">
         <a class="nav-link"
-          ui-sref-active="active"
-          ui-sref="app.home">
+          routerLinkActive="active"
+          [routerLink]="['/']">
           Home
         </a>
       </li>
 
       <li class="nav-item">
         <a class="nav-link"
-          ui-sref-active="active"
-          ui-sref="app.editor">
+          routerLinkActive="active"
+          [routerLink]="['/editor']">
           <i class="ion-compose"></i>&nbsp;New Article
         </a>
       </li>
 
       <li class="nav-item">
         <a class="nav-link"
-          ui-sref-active="active"
-          ui-sref="app.settings">
+          routerLinkActive="active"
+          [routerLink]="['/settings']">
           <i class="ion-gear-a"></i>&nbsp;Settings
         </a>
       </li>
 
       <li class="nav-item">
         <a class="nav-link"
-          ui-sref-active="active"
-          ui-sref="app.profile.main({ username: $ctrl.currentUser.username})">
-          <img ng-src="{{$ctrl.currentUser.image}}" class="user-pic" />
-          {{ $ctrl.currentUser.username }}
+          routerLinkActive="active"
+          [routerLink]="['/profile', currentUser.username]">
+          <img [src]="currentUser.image" class="user-pic" />
+          {{ currentUser.username }}
         </a>
       </li>
 
     </ul>
-
 
   </div>
 </nav>

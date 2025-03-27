@@ -1,8 +1,11 @@
+<!-- Angular 12 footer component template -->
 <footer>
   <div class="container">
-    <a class="logo-font" ui-sref="app.home" ng-bind="::$ctrl.appName | lowercase"></a>
+    <!-- Changed ui-sref to routerLink for Angular routing -->
+    <a class="logo-font" [routerLink]="['/']" [innerHTML]="appName | lowercase"></a>
     <span class="attribution">
-      &copy; {{::$ctrl.date | date:'yyyy'}}.
+      <!-- Removed one-time binding syntax (::) and kept the date pipe -->
+      &copy; {{date | date:'yyyy'}}.
       An interactive learning project from <a href="https://thinkster.io">Thinkster</a>.
       Code licensed under MIT.
     </span>

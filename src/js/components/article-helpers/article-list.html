@@ -1,20 +1,29 @@
+<!-- 
+  Angular 12 template conversion:
+  - Replaced ng-repeat with *ngFor
+  - Replaced ng-hide with *ngIf
+  - Replaced ng-show with *ngIf
+  - Removed $ctrl references in favor of direct property binding
+  - Converted binding syntax to Angular style
+-->
+
 <article-preview
-  article="article"
-  ng-repeat="article in $ctrl.list">
+  [article]="article"
+  *ngFor="let article of list">
 </article-preview>
 
 <div class="article-preview"
-  ng-hide="!$ctrl.loading">
+  *ngIf="loading">
   Loading articles...
 </div>
 
 <div class="article-preview"
-  ng-show="!$ctrl.loading && !$ctrl.list.length">
+  *ngIf="!loading && !list.length">
   No articles are here... yet.
 </div>
 
 <list-pagination
- total-pages="$ctrl.listConfig.totalPages"
- current-page="$ctrl.listConfig.currentPage"
- ng-hide="$ctrl.listConfig.totalPages <= 1">
+ [totalPages]="listConfig.totalPages"
+ [currentPage]="listConfig.currentPage"
+ *ngIf="listConfig.totalPages > 1">
 </list-pagination>

@@ -1,20 +1,40 @@
-class ArticleListCtrl {
-  constructor(Articles, $scope) {
-    'ngInject';
+// Import necessary Angular dependencies
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { ArticlesService } from '../../services/articles.service';
 
-    this._Articles = Articles;
+// Using @Component decorator instead of AngularJS component definition
+@Component({
+  selector: 'app-article-list',
+  templateUrl: './article-list.component.html' // Updated path may need adjustment
+})
+export class ArticleListComponent implements OnInit, OnDestroy {
+  // Convert bindings to @Input properties
+  @Input() limit: number;
+  @Input() listConfig: any;
 
+  // Component properties
+  loading: boolean = false;
+  list: Array<any> = [];
+  
+  // For managing subscriptions
+  private subscriptions: Subscription = new Subscription();
+
+  // Inject services through constructor
+  constructor(private articlesService: ArticlesService) {}
+
+  // Use ngOnInit instead of constructor for initialization
+  ngOnInit() {
+    // Initialize with the provided listConfig
     this.setListTo(this.listConfig);
+    
+    // Note: Angular doesn't use $scope.$on, we would typically use a service with observables
+    // If event handling is needed, it should be implemented through a service
+  }
 
-
-    $scope.$on('setListTo', (ev, newList) => {
-      this.setListTo(newList);
-    });
-
-    $scope.$on('setPageTo', (ev, pageNumber) => {
-      this.setPageTo(pageNumber);
-    });
-
+  // Clean up subscriptions when component is destroyed
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 
   setListTo(newList) {
@@ -33,8 +53,7 @@ class ArticleListCtrl {
     this.runQuery();
   }
 
-
- runQuery() {
+  runQuery() {
     // Show the loading indicator
     this.loading = true;
     this.listConfig = this.listConfig || {};
@@ -56,10 +75,10 @@ class ArticleListCtrl {
     // Add the offset filter
     queryConfig.filters.offset = (this.limit * (this.listConfig.currentPage - 1));
 
-    // Run the query
-    this._Articles
+    // Run the query - converted from promise to subscription
+    const querySub = this.articlesService
       .query(queryConfig)
-      .then(
+      .subscribe(
         (res) => {
           this.loading = false;
 
@@ -69,17 +88,8 @@ class ArticleListCtrl {
           this.listConfig.totalPages = Math.ceil(res.articlesCount / this.limit);
         }
       );
+      
+    // Add subscription to be cleaned up later
+    this.subscriptions.add(querySub);
   }
-
 }
-
-let ArticleList = {
-  bindings: {
-    limit: '=',
-    listConfig: '='
-  },
-  controller: ArticleListCtrl,
-  templateUrl: 'components/article-helpers/article-list.html'
-};
-
-export default ArticleList;

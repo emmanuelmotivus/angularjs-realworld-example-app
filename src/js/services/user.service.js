@@ -1,105 +1,115 @@
-export default class User {
-  constructor(JWT, AppConstants, $http, $state, $q) {
-    'ngInject';
+// user.service.ts
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, BehaviorSubject, of } from 'rxjs';
+import { map, catchError, tap } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
-    this._JWT = JWT;
-    this._AppConstants = AppConstants;
-    this._$http = $http;
-    this._$state = $state;
-    this._$q = $q;
+import { JwtService } from './jwt.service';
+import { AppConstants } from '../config/app.constants';
 
-    this.current = null;
+@Injectable({
+  providedIn: 'root'
+})
+export class UserService {
+  // BehaviorSubject to track current user state
+  private currentUserSubject = new BehaviorSubject<any>(null);
+  public currentUser = this.currentUserSubject.asObservable();
 
+  // Current user data
+  get current() {
+    return this.currentUserSubject.value;
   }
 
+  set current(userData: any) {
+    this.currentUserSubject.next(userData);
+  }
 
-  attemptAuth(type, credentials) {
-    let route = (type === 'login') ? '/login' : '';
-    return this._$http({
-      url: this._AppConstants.api + '/users' + route,
-      method: 'POST',
-      data: {
-        user: credentials
-      }
-    }).then(
-      (res) => {
-        this._JWT.save(res.data.user.token);
-        this.current = res.data.user;
+  constructor(
+    private jwtService: JwtService,
+    private appConstants: AppConstants,
+    private http: HttpClient,
+    private router: Router
+  ) {}
 
-        return res;
-      }
+  // Attempt to authenticate a user
+  attemptAuth(type: string, credentials: any): Observable<any> {
+    const route = (type === 'login') ? '/login' : '';
+    return this.http.post(
+      `${this.appConstants.api}/users${route}`,
+      { user: credentials }
+    ).pipe(
+      tap(response => {
+        // Save JWT token and update current user
+        this.jwtService.save(response.user.token);
+        this.current = response.user;
+      })
     );
   }
 
-  update(fields) {
-    return this._$http({
-      url:  this._AppConstants.api + '/user',
-      method: 'PUT',
-      data: { user: fields }
-    }).then(
-      (res) => {
-        this.current = res.data.user;
-        return res.data.user;
-      }
-    )
+  // Update user data
+  update(fields: any): Observable<any> {
+    return this.http.put(
+      `${this.appConstants.api}/user`,
+      { user: fields }
+    ).pipe(
+      map(response => {
+        this.current = response.user;
+        return response.user;
+      })
+    );
   }
 
-  logout() {
+  // Logout the current user
+  logout(): void {
     this.current = null;
-    this._JWT.destroy();
-    this._$state.go(this._$state.$current, null, { reload: true });
+    this.jwtService.destroy();
+    // Navigate to current route with reload
+    this.router.navigate([this.router.url], { onSameUrlNavigation: 'reload' });
   }
 
-  verifyAuth() {
-    let deferred = this._$q.defer();
-
-    // check for JWT token
-    if (!this._JWT.get()) {
-      deferred.resolve(false);
-      return deferred.promise;
+  // Verify if user is authenticated
+  verifyAuth(): Observable<boolean> {
+    // Check for JWT token
+    if (!this.jwtService.get()) {
+      return of(false);
     }
 
+    // If we already have current user data, user is authenticated
     if (this.current) {
-      deferred.resolve(true);
-
+      return of(true);
     } else {
-      this._$http({
-        url: this._AppConstants.api + '/user',
-        method: 'GET',
-        headers: {
-          Authorization: 'Token ' + this._JWT.get()
-        }
-      }).then(
-        (res) => {
-          this.current = res.data.user;
-          deferred.resolve(true);
-        },
+      // Otherwise, check with the server
+      const headers = new HttpHeaders({
+        'Authorization': 'Token ' + this.jwtService.get()
+      });
 
-        (err) => {
-          this._JWT.destroy();
-          deferred.resolve(false);
-        }
-      )
+      return this.http.get(
+        `${this.appConstants.api}/user`,
+        { headers }
+      ).pipe(
+        map(response => {
+          this.current = response.user;
+          return true;
+        }),
+        catchError(err => {
+          this.jwtService.destroy();
+          return of(false);
+        })
+      );
     }
-
-    return deferred.promise;
   }
 
-
-  ensureAuthIs(bool) {
-    let deferred = this._$q.defer();
-
-    this.verifyAuth().then((authValid) => {
-      if (authValid !== bool) {
-        this._$state.go('app.home')
-        deferred.resolve(false);
-      } else {
-        deferred.resolve(true);
-      }
-
-    });
-
-    return deferred.promise;
+  // Ensure authentication status matches expected value
+  ensureAuthIs(bool: boolean): Observable<boolean> {
+    return this.verifyAuth().pipe(
+      map(authValid => {
+        if (authValid !== bool) {
+          this.router.navigateByUrl('/');
+          return false;
+        }
+        return true;
+      })
+    );
   }
-
 }

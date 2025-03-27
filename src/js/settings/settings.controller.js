@@ -1,34 +1,60 @@
-class SettingsCtrl {
-  constructor(User, $state) {
-    'ngInject';
+// settings.component.ts
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { UserService } from '../services/user.service';
+import { User } from '../models/user.model';
 
-    this._User = User;
-    this._$state = $state;
+@Component({
+  selector: 'app-settings',
+  templateUrl: './settings.component.html', // Assuming the template is in this location
+  styleUrls: ['./settings.component.scss'] // Optional: add styles if needed
+})
+export class SettingsComponent implements OnInit {
+  // Form data model
+  formData: {
+    email: string;
+    bio: string;
+    image: string;
+    username: string;
+  };
 
+  // Form state
+  isSubmitting = false;
+  errors: any = {};
+
+  constructor(
+    private userService: UserService, // Angular DI instead of 'ngInject'
+    private router: Router // Angular Router instead of $state
+  ) {}
+
+  ngOnInit(): void {
+    // Initialize form data from current user
+    // Moved from constructor to ngOnInit lifecycle hook
     this.formData = {
-      email: User.current.email,
-      bio: User.current.bio,
-      image: User.current.image,
-      username: User.current.username
-    }
-
-    this.logout = User.logout.bind(User);
-
+      email: this.userService.getCurrentUser().email,
+      bio: this.userService.getCurrentUser().bio,
+      image: this.userService.getCurrentUser().image,
+      username: this.userService.getCurrentUser().username
+    };
   }
 
-  submitForm() {
+  submitForm(): void {
     this.isSubmitting = true;
-    this._User.update(this.formData).then(
-      (user) => {
-        this._$state.go('app.profile.main', {username:user.username})
+    this.userService.update(this.formData).subscribe(
+      // Using Observable subscribe instead of Promise then
+      (user: User) => {
+        // Navigate using Angular Router instead of $state.go
+        this.router.navigate(['/profile', user.username]);
       },
       (err) => {
         this.isSubmitting = false;
-        this.errors = err.data.errors;
+        this.errors = err.error.errors; // Updated error handling for Angular HttpClient
       }
-    )
+    );
   }
 
+  // Logout method
+  logout(): void {
+    this.userService.logout();
+  }
 }
-
-export default SettingsCtrl;

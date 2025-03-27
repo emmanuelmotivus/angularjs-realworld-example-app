@@ -1,32 +1,52 @@
-function ShowAuthed(User) {
-  'ngInject';
+// show-authed.directive.ts
+import { Directive, ElementRef, Input, OnInit, OnDestroy, Renderer2 } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { UserService } from '../services/user.service';
 
-  return {
-    restrict: 'A',
-    link: function(scope, element, attrs) {
-      scope.User = User;
+@Directive({
+  selector: '[showAuthed]'
+})
+export class ShowAuthedDirective implements OnInit, OnDestroy {
+  // Input property to replace the attribute value
+  @Input() showAuthed: boolean;
+  
+  // Subscription to track and clean up
+  private userSubscription: Subscription;
 
-      scope.$watch('User.current', function(val) {
-          // If user detected
-          if (val) {
-            if (attrs.showAuthed === 'true') {
-              element.css({ display: 'inherit'})
-            } else {
-              element.css({ display: 'none'})
-            }
+  constructor(
+    private element: ElementRef,
+    private renderer: Renderer2,
+    private userService: UserService
+  ) {}
 
-          // no user detected
+  ngOnInit() {
+    // Subscribe to the user's authentication state
+    // Assuming UserService has a currentUser observable that emits the current user
+    this.userSubscription = this.userService.currentUser.subscribe(
+      (user) => {
+        // If user is authenticated
+        if (user) {
+          if (this.showAuthed === true) {
+            this.renderer.setStyle(this.element.nativeElement, 'display', 'inherit');
           } else {
-            if (attrs.showAuthed === 'true') {
-              element.css({ display: 'none'})
-            } else {
-              element.css({ display: 'inherit'})
-            }
+            this.renderer.setStyle(this.element.nativeElement, 'display', 'none');
           }
-      });
+        // If user is not authenticated
+        } else {
+          if (this.showAuthed === true) {
+            this.renderer.setStyle(this.element.nativeElement, 'display', 'none');
+          } else {
+            this.renderer.setStyle(this.element.nativeElement, 'display', 'inherit');
+          }
+        }
+      }
+    );
+  }
 
+  ngOnDestroy() {
+    // Clean up subscription when directive is destroyed
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
     }
-  };
+  }
 }
-
-export default ShowAuthed;

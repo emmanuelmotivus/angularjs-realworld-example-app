@@ -1,32 +1,40 @@
-function AuthConfig($stateProvider, $httpProvider) {
-  'ngInject';
+// auth-routing.module.ts
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { AuthComponent } from './auth.component';
+import { UserService } from '../services/user.service';
 
-  $stateProvider
-
-  .state('app.login', {
-    url: '/login',
-    controller: 'AuthCtrl as $ctrl',
-    templateUrl: 'auth/auth.html',
+// Converting AngularJS UI-Router states to Angular Router routes
+const routes: Routes = [
+  {
+    path: 'login',
+    component: AuthComponent,
     title: 'Sign in',
     resolve: {
-      auth: function(User) {
-        return User.ensureAuthIs(false);
+      // Converting resolve function to a resolver that checks auth state
+      auth: () => {
+        return inject(UserService).ensureAuthIs(false);
       }
     }
-  })
-
-  .state('app.register', {
-    url: '/register',
-    controller: 'AuthCtrl as $ctrl',
-    templateUrl: 'auth/auth.html',
+  },
+  {
+    path: 'register',
+    component: AuthComponent,
     title: 'Sign up',
     resolve: {
-      auth: function(User) {
-        return User.ensureAuthIs(false);
+      // Converting resolve function to a resolver that checks auth state
+      auth: () => {
+        return inject(UserService).ensureAuthIs(false);
       }
     }
-  });
+  }
+];
 
-};
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class AuthRoutingModule { }
 
-export default AuthConfig;
+// We need to export the routes for the main routing module
+export const authRoutes = routes;
