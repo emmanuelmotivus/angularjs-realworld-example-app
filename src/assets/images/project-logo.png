@@ -1,0 +1,12 @@
+// This is a file operation rather than a code conversion
+// The task is to move project-logo.png from the root directory to src/assets/images/project-logo.png
+
+// In Angular CLI, we would use:
+// 1. Create the directory if it doesn't exist:
+//    mkdir -p src/assets/images
+// 2. Copy the file:
+//    cp project-logo.png src/assets/images/project-logo.png
+
+// No TypeScript code is needed for this operation as it's a file move/copy
+// The image will be referenced in Angular components using:
+// <img src="assets/images/project-logo.png" alt="Project Logo">
