@@ -1,14 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes, PreloadAllModules } from '@angular/router';
 import { AuthGuard } from './core/guards/auth.guard';
+import { AppComponent } from './app.component';
 
 const routes: Routes = [
   {
     path: '',
-    // The app-view.html will be replaced by the AppComponent template
-    // which will contain the <router-outlet> for child routes
-    component: null, // Will be replaced by the AppComponent
-    canActivate: [AuthGuard], // Replaces the auth resolve from AngularJS
     children: [
       {
         path: '',
@@ -22,6 +19,8 @@ const routes: Routes = [
         path: 'register',
         loadChildren: () => import('./features/auth/auth.module').then(m => m.AuthModule)
       },
+      // Temporarily commented out routes that depend on missing modules
+      /*
       {
         path: 'settings',
         loadChildren: () => import('./features/settings/settings.module').then(m => m.SettingsModule),
@@ -37,10 +36,14 @@ const routes: Routes = [
         loadChildren: () => import('./features/editor/editor.module').then(m => m.EditorModule),
         canActivate: [AuthGuard] // Protect editor route with slug parameter
       },
+      */
+      
       {
         path: 'article/:slug',
         loadChildren: () => import('./features/article/article.module').then(m => m.ArticleModule)
       },
+      // Temporarily commented out routes that depend on missing modules
+      /*
       {
         path: 'profile/:username',
         loadChildren: () => import('./features/profile/profile.module').then(m => m.ProfileModule)
@@ -49,6 +52,7 @@ const routes: Routes = [
         path: 'profile/:username/favorites',
         loadChildren: () => import('./features/profile/profile.module').then(m => m.ProfileModule)
       },
+      */
       // Catch-all route for 404 errors
       {
         path: '**',

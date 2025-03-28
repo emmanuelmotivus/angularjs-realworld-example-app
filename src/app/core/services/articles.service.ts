@@ -3,25 +3,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-
-// Define interfaces for type safety
-export interface Article {
-  slug: string;
-  title: string;
-  description: string;
-  body: string;
-  tagList?: string[];
-  createdAt?: string;
-  updatedAt?: string;
-  favorited?: boolean;
-  favoritesCount?: number;
-  author?: {
-    username: string;
-    bio: string;
-    image: string;
-    following: boolean;
-  };
-}
+import { ApiConfig } from '../config/api.config';
+import { Article } from '../models/article.model';
 
 export interface ArticleResponse {
   article: Article;
@@ -33,7 +16,8 @@ export interface ArticlesResponse {
 }
 
 export interface ArticleQueryConfig {
-  type: 'all' | 'feed';
+  limit?: number;
+  offset?: number;
   filters?: {
     tag?: string;
     author?: string;
@@ -44,27 +28,35 @@ export interface ArticleQueryConfig {
 }
 
 @Injectable({
-  providedIn: 'root' // Makes the service tree-shakable and available app-wide
+  providedIn: 'root'
 })
 export class ArticlesService {
-  private apiUrl = environment.api_url; // Using Angular environment instead of AppConstants
-
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private apiConfig: ApiConfig
+  ) {}
 
   /**
-   * Query articles based on type and filters
+   * Get all articles (globally)
    * @param config Configuration object for the query
    * @returns Observable of articles response
    */
-  query(config: ArticleQueryConfig): Observable<ArticlesResponse> {
-    // Determine the endpoint based on the type
-    const endpoint = config.type === 'feed' ? '/articles/feed' : '/articles';
-    
+  getAll(config: ArticleQueryConfig): Observable<ArticlesResponse> {
     // Convert filters to HttpParams if they exist
     let params = new HttpParams();
+    
+    // Set limit and offset
+    if (config.limit) {
+      params = params.set('limit', config.limit.toString());
+    }
+    if (config.offset !== undefined) {
+      params = params.set('offset', config.offset.toString());
+    }
+    
+    // Add any filters
     if (config.filters) {
       Object.keys(config.filters).forEach(key => {
-        const value = config.filters[key];
+        const value = config.filters?.[key as keyof typeof config.filters];
         if (value !== undefined) {
           params = params.set(key, value.toString());
         }
@@ -72,10 +64,38 @@ export class ArticlesService {
     }
 
     // Return the HTTP request as an Observable
-    return this.http.get<ArticlesResponse>(`${this.apiUrl}${endpoint}`, { params })
-      .pipe(
-        catchError(err => throwError(() => new Error(err.message || 'Failed to fetch articles')))
-      );
+    return this.http.get<ArticlesResponse>(
+      this.apiConfig.articles.list,
+      { params }
+    ).pipe(
+      catchError(err => throwError(() => new Error(err.message || 'Failed to fetch articles')))
+    );
+  }
+
+  /**
+   * Get feed articles (for authenticated users)
+   * @param config Configuration object for the query
+   * @returns Observable of articles response
+   */
+  getFeed(config: ArticleQueryConfig): Observable<ArticlesResponse> {
+    // Convert filters to HttpParams if they exist
+    let params = new HttpParams();
+    
+    // Set limit and offset
+    if (config.limit) {
+      params = params.set('limit', config.limit.toString());
+    }
+    if (config.offset !== undefined) {
+      params = params.set('offset', config.offset.toString());
+    }
+
+    // Return the HTTP request as an Observable
+    return this.http.get<ArticlesResponse>(
+      this.apiConfig.articles.feed,
+      { params }
+    ).pipe(
+      catchError(err => throwError(() => new Error(err.message || 'Failed to fetch feed')))
+    );
   }
 
   /**
@@ -89,7 +109,7 @@ export class ArticlesService {
       return throwError(() => new Error('Article slug is empty'));
     }
 
-    return this.http.get<ArticleResponse>(`${this.apiUrl}/articles/${slug}`)
+    return this.http.get<ArticleResponse>(this.apiConfig.articles.get(slug))
       .pipe(
         map(response => response.article),
         catchError(err => throwError(() => new Error(err.message || 'Failed to get article')))
@@ -102,39 +122,39 @@ export class ArticlesService {
    * @returns Observable of the HTTP response
    */
   destroy(slug: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/articles/${slug}`)
+    return this.http.delete(this.apiConfig.articles.delete(slug))
       .pipe(
         catchError(err => throwError(() => new Error(err.message || 'Failed to delete article')))
       );
   }
 
   /**
-   * Save an article (create or update)
-   * @param article The article to save
+   * Create a new article
+   * @param article The article to create
    * @returns Observable of the saved article
    */
-  save(article: Article): Observable<Article> {
-    let url = `${this.apiUrl}/articles`;
-    let method: 'post' | 'put' = 'post';
-    
-    // If article has a slug, it's an update operation
-    if (article.slug) {
-      url = `${this.apiUrl}/articles/${article.slug}`;
-      method = 'put';
-      
-      // Create a copy to avoid modifying the original object
-      const articleCopy = { ...article };
-      delete articleCopy.slug;
-      article = articleCopy;
-    }
-
-    // Use the appropriate HTTP method
-    return (method === 'post' 
-      ? this.http.post<ArticleResponse>(url, { article })
-      : this.http.put<ArticleResponse>(url, { article })
+  create(article: Partial<Article>): Observable<Article> {
+    return this.http.post<ArticleResponse>(
+      this.apiConfig.articles.create,
+      { article }
     ).pipe(
       map(response => response.article),
-      catchError(err => throwError(() => new Error(err.message || 'Failed to save article')))
+      catchError(err => throwError(() => new Error(err.message || 'Failed to create article')))
+    );
+  }
+
+  /**
+   * Update an existing article
+   * @param article The article to update
+   * @returns Observable of the updated article
+   */
+  update(slug: string, article: Partial<Article>): Observable<Article> {
+    return this.http.put<ArticleResponse>(
+      this.apiConfig.articles.update(slug),
+      { article }
+    ).pipe(
+      map(response => response.article),
+      catchError(err => throwError(() => new Error(err.message || 'Failed to update article')))
     );
   }
 
@@ -143,11 +163,14 @@ export class ArticlesService {
    * @param slug The article slug
    * @returns Observable of the HTTP response
    */
-  favorite(slug: string): Observable<ArticleResponse> {
-    return this.http.post<ArticleResponse>(`${this.apiUrl}/articles/${slug}/favorite`, {})
-      .pipe(
-        catchError(err => throwError(() => new Error(err.message || 'Failed to favorite article')))
-      );
+  favorite(slug: string): Observable<Article> {
+    return this.http.post<ArticleResponse>(
+      this.apiConfig.articles.favorite(slug),
+      {}
+    ).pipe(
+      map(response => response.article),
+      catchError(err => throwError(() => new Error(err.message || 'Failed to favorite article')))
+    );
   }
 
   /**
@@ -155,10 +178,21 @@ export class ArticlesService {
    * @param slug The article slug
    * @returns Observable of the HTTP response
    */
-  unfavorite(slug: string): Observable<ArticleResponse> {
-    return this.http.delete<ArticleResponse>(`${this.apiUrl}/articles/${slug}/favorite`)
-      .pipe(
-        catchError(err => throwError(() => new Error(err.message || 'Failed to unfavorite article')))
-      );
+  unfavorite(slug: string): Observable<Article> {
+    return this.http.delete<ArticleResponse>(
+      this.apiConfig.articles.unfavorite(slug)
+    ).pipe(
+      map(response => response.article),
+      catchError(err => throwError(() => new Error(err.message || 'Failed to unfavorite article')))
+    );
+  }
+
+  /**
+   * Delete an article
+   * @param slug The article slug
+   * @returns Observable of the HTTP response
+   */
+  deleteArticle(slug: string): Observable<any> {
+    return this.destroy(slug);
   }
 }

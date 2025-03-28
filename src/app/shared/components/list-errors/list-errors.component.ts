@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnChanges } from '@angular/core';
 
 /**
  * ListErrorsComponent
@@ -22,10 +22,10 @@ interface Errors {
   selector: 'app-list-errors',
   templateUrl: './list-errors.component.html'
 })
-export class ListErrorsComponent implements OnInit {
+export class ListErrorsComponent implements OnInit, OnChanges {
   // Input property to receive errors from parent component
   // In Angular, we use @Input() for one-way binding instead of AngularJS's '='
-  @Input() errors: Errors;
+  @Input() errors: Errors = {};
   
   // Property to store the error messages for display in the template
   errorList: string[] = [];

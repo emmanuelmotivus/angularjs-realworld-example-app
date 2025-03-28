@@ -1,0 +1,18 @@
+<div class="article-preview" *ngIf="loading">
+  Loading articles...
+</div>
+
+<div class="article-preview" *ngIf="articles.length === 0 && !loading">
+  No articles here... yet.
+</div>
+
+<app-article-preview
+  *ngFor="let article of articles"
+  [article]="article">
+</app-article-preview>
+
+<app-list-pagination
+  [totalPages]="totalPages"
+  [currentPage]="currentPage"
+  (setPage)="setPageTo($event)">
+</app-list-pagination>

@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  # Angular development server
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.simple
+    ports:
+      - "4200:4200"
+    # No volume mounts to avoid dependency issues

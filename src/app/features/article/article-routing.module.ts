@@ -1,47 +1,34 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes, Resolve, Router, ActivatedRouteSnapshot } from '@angular/router';
-import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { NgModule, Injectable } from '@angular/core';
+import { RouterModule, Routes, ActivatedRouteSnapshot, Resolve } from '@angular/router';
+import { Observable } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
-import { ArticleComponent } from './article.component';
+import { ArticlePageComponent } from './pages/article-page/article-page.component';
 import { ArticlesService } from '../../core/services/articles.service';
 import { Article } from '../../core/models/article.model';
 
-/**
- * Resolver to fetch article data before navigating to the article page
- * This replaces the AngularJS resolve functionality
- */
-@Injectable({ providedIn: 'root' })
+// Resolver to pre-fetch article data
+@Injectable()
 export class ArticleResolver implements Resolve<Article> {
-  constructor(
-    private articlesService: ArticlesService,
-    private router: Router
-  ) {}
+  constructor(private articlesService: ArticlesService) {}
 
   resolve(route: ActivatedRouteSnapshot): Observable<Article> {
     const slug = route.paramMap.get('slug');
     
-    // Return the article data or redirect to home if article not found
-    return this.articlesService.get(slug).pipe(
-      catchError(() => {
-        this.router.navigateByUrl('/');
-        return of(null);
-      })
-    );
+    if (!slug) {
+      throw new Error('Article slug is required');
+    }
+    
+    return this.articlesService.get(slug);
   }
 }
 
-// Define the routes for the article feature module
 const routes: Routes = [
   {
     path: ':slug',
-    component: ArticleComponent,
+    component: ArticlePageComponent,
     resolve: {
       article: ArticleResolver
-    },
-    data: { 
-      title: 'Article'
     }
   }
 ];
@@ -51,4 +38,4 @@ const routes: Routes = [
   exports: [RouterModule],
   providers: [ArticleResolver]
 })
-export class ArticleRoutingModule {}
+export class ArticleRoutingModule { }

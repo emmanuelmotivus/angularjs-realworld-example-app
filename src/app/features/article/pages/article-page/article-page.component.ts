@@ -1,136 +1,122 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
-import { Observable } from 'rxjs';
-import { finalize } from 'rxjs/operators';
-import * as marked from 'marked';
+import { Subscription, combineLatest } from 'rxjs';
 
 import { Article } from '../../../../core/models/article.model';
 import { Comment } from '../../../../core/models/comment.model';
 import { User } from '../../../../core/models/user.model';
-import { ArticleService } from '../../../../core/services/article.service';
+import { ArticlesService } from '../../../../core/services/articles.service';
 import { CommentsService } from '../../../../core/services/comments.service';
 import { UserService } from '../../../../core/services/user.service';
-import { Errors } from '../../../../core/models/errors.model';
 
 @Component({
   selector: 'app-article-page',
-  templateUrl: './article-page.component.html',
-  styleUrls: ['./article-page.component.scss']
+  templateUrl: './article-page.component.html'
 })
-export class ArticlePageComponent implements OnInit {
-  article: Article;
+export class ArticlePageComponent implements OnInit, OnDestroy {
+  article!: Article;
+  currentUser: User | null = null;
   comments: Comment[] = [];
-  currentUser: User;
-  canModify: boolean = false;
-  isDeleting: boolean = false;
-  isSubmitting: boolean = false;
-  sanitizedBody: SafeHtml;
+  canModify = false;
+  isSubmitting = false;
+  isDeleting = false;
+  commentBody = '';
+  commentFormErrors: any = {};
   
-  commentForm = {
-    isSubmitting: false,
-    body: '',
-    errors: {} as Errors
-  };
+  private subscriptions: Subscription = new Subscription();
 
   constructor(
-    private articleService: ArticleService,
-    private commentsService: CommentsService,
     private route: ActivatedRoute,
     private router: Router,
-    private sanitizer: DomSanitizer,
-    private titleService: Title,
+    private articlesService: ArticlesService,
+    private commentsService: CommentsService,
     private userService: UserService
   ) {}
 
   ngOnInit() {
     // Retrieve the prefetched article
     this.route.data.subscribe(
-      (data: { article: Article }) => {
+      (data: any) => {
         this.article = data.article;
-        
-        // Set page title
-        this.titleService.setTitle(this.article.title);
-        
-        // Convert Markdown to HTML and sanitize
-        this.sanitizedBody = this.sanitizer.bypassSecurityTrustHtml(
-          marked(this.article.body, { sanitize: true })
-        );
-        
-        // Load comments
-        this.loadComments();
-        
-        // Load the current user's data
-        this.userService.currentUser.subscribe(
-          (userData: User) => {
-            this.currentUser = userData;
-            
-            // Check if the current user is the author of this article
-            this.canModify = this.currentUser && 
-              this.currentUser.username === this.article.author.username;
-          }
-        );
+
+        // Load the comments on this article
+        this.populateComments();
       }
+    );
+
+    // Load the current user's data
+    this.subscriptions.add(
+      this.userService.currentUser.subscribe(
+        (userData: User | null) => {
+          this.currentUser = userData;
+
+          // Check if the current user is the author of this article
+          this.canModify = (this.currentUser?.username === this.article?.author.username);
+        }
+      )
     );
   }
 
-  loadComments() {
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+  }
+
+  populateComments() {
     this.commentsService.getAll(this.article.slug)
       .subscribe(comments => {
         this.comments = comments;
       });
   }
 
-  resetCommentForm() {
-    this.commentForm = {
-      isSubmitting: false,
-      body: '',
-      errors: {} as Errors
-    };
-  }
-
   addComment() {
-    this.commentForm.isSubmitting = true;
+    this.isSubmitting = true;
+    this.commentFormErrors = {};
 
-    this.commentsService.add(this.article.slug, this.commentForm.body)
-      .pipe(
-        finalize(() => {
-          this.commentForm.isSubmitting = false;
-        })
-      )
+    this.commentsService
+      .add(this.article.slug, this.commentBody)
       .subscribe(
         comment => {
           this.comments.unshift(comment);
-          this.resetCommentForm();
+          this.commentBody = '';
+          this.isSubmitting = false;
         },
-        err => {
-          this.commentForm.errors = err.error.errors;
+        errors => {
+          this.isSubmitting = false;
+          this.commentFormErrors = errors;
         }
       );
   }
 
-  deleteComment(commentId: number, index: number) {
-    this.commentsService.destroy(commentId, this.article.slug)
+  deleteComment(comment: Comment) {
+    this.commentsService.delete(this.article.slug, comment.id)
       .subscribe(
-        success => {
-          this.comments.splice(index, 1);
+        () => {
+          this.comments = this.comments.filter((item) => item.id !== comment.id);
         }
       );
   }
 
   deleteArticle() {
     this.isDeleting = true;
-    
-    this.articleService.destroy(this.article.slug)
-      .pipe(
-        finalize(() => {
-          this.isDeleting = false;
-        })
-      )
+
+    this.articlesService.deleteArticle(this.article.slug)
       .subscribe(
-        success => {
+        () => {
           this.router.navigateByUrl('/');
         }
       );
+  }
+  
+  onToggleFollowing(following: boolean) {
+    this.article.author.following = following;
+  }
+  
+  onToggleFavorite(favorited: boolean) {
+    this.article.favorited = favorited;
+    if (favorited) {
+      this.article.favoritesCount++;
+    } else {
+      this.article.favoritesCount--;
+    }
   }
 }

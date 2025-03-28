@@ -1,20 +1,16 @@
+import { Profile } from './profile.model';
+
+/**
+ * Comment model
+ * 
+ * Represents a comment on an article
+ */
 export interface Comment {
   id: number;
   body: string;
   createdAt: string;
   updatedAt: string;
-  author: {
-    username: string;
-    bio: string;
-    image: string;
-    following: boolean;
-  };
-}
-
-export interface CommentCreateRequest {
-  comment: {
-    body: string;
-  };
+  author: Profile;
 }
 
 export interface CommentsResponse {

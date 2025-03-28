@@ -1,3 +1,8 @@
+/**
+ * Profile model
+ * 
+ * Represents a user profile in the application
+ */
 export interface Profile {
   username: string;
   bio: string;

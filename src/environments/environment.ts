@@ -9,6 +9,7 @@ export const environment = {
   // api: 'http://localhost:3000/api',
   jwtKey: 'jwtToken',
   appName: 'Conduit',
+  api_url: 'https://conduit.productionready.io/api' // Added for backward compatibility
 };
 
 // Note: To use this in production builds, you would create an environment.prod.ts file

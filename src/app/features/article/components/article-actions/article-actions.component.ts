@@ -1,62 +1,59 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
+
+import { Article } from '../../../../core/models/article.model';
+import { User } from '../../../../core/models/user.model';
 import { ArticlesService } from '../../../../core/services/articles.service';
 import { UserService } from '../../../../core/services/user.service';
-import { Article } from '../../../../core/models/article.model';
-import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-article-actions',
   templateUrl: './article-actions.component.html'
 })
 export class ArticleActionsComponent implements OnInit {
-  // Convert the two-way binding '=' to an Angular @Input property
-  @Input() article: Article;
-  
-  // Properties
+  @Input() article!: Article;
+  @Output() toggle = new EventEmitter<boolean>();
+  @Output() delete = new EventEmitter<boolean>();
+
   canModify: boolean = false;
   isDeleting: boolean = false;
 
   constructor(
     private articlesService: ArticlesService,
-    private userService: UserService,
-    private router: Router
+    private router: Router,
+    private userService: UserService
   ) {}
 
   ngOnInit() {
-    // Check if the current user is the author of the article
-    // This replaces the constructor logic from the AngularJS component
-    const currentUser = this.userService.getCurrentUser();
-    
-    if (currentUser) {
-      this.canModify = (currentUser.username === this.article.author.username);
-    } else {
-      this.canModify = false;
-    }
+    // Determine if the current user is the author of this article
+    this.userService.currentUser.subscribe(
+      (userData: User | null) => {
+        this.canModify = userData !== null && userData.username === this.article.author.username;
+      }
+    );
   }
 
   deleteArticle() {
     this.isDeleting = true;
     
-    // Convert promise-based API to Observable with RxJS
     this.articlesService.deleteArticle(this.article.slug)
-      .pipe(
-        // Use finalize to handle cleanup regardless of success/error
-        finalize(() => {
-          this.isDeleting = false;
-        })
-      )
       .subscribe(
-        // Success callback
-        () => {
+        success => {
           this.router.navigateByUrl('/');
         },
-        // Error callback
-        (err) => {
-          // Log the error but still navigate home
-          console.error('Error deleting article', err);
-          this.router.navigateByUrl('/');
+        err => {
+          this.isDeleting = false;
         }
       );
+  }
+  
+  onToggleFollowing(following: boolean) {
+    // Emit the toggle event to the parent component
+    this.toggle.emit(following);
+  }
+  
+  onToggleFavorite(favorited: boolean) {
+    // Emit the toggle event to the parent component
+    this.toggle.emit(favorited);
   }
 }

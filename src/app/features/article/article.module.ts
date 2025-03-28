@@ -1,58 +1,56 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { ReactiveFormsModule } from '@angular/forms';
-
-// Components
-import { ArticleComponent } from './pages/article/article.component';
-import { ArticleActionsComponent } from './components/article-actions/article-actions.component';
-import { CommentComponent } from './components/comment/comment.component';
-
-// Services
-import { ArticleService } from '../../core/services/article.service';
-import { CommentsService } from '../../core/services/comments.service';
-import { UserService } from '../../core/services/user.service';
+import { FormsModule } from '@angular/forms';
 
 // Routing
 import { ArticleRoutingModule } from './article-routing.module';
 
+// Components
+import { ArticlePageComponent } from './pages/article-page/article-page.component';
+import { ArticleActionsComponent } from './components/article-actions/article-actions.component';
+import { CommentComponent } from './components/comment/comment.component';
+
+// Services
+import { ArticlesService } from '../../core/services/articles.service';
+import { CommentsService } from '../../core/services/comments.service';
+
+// Shared module (for components like article-meta, favorite-button, etc.)
+import { SharedModule } from '../../shared/shared.module';
+
 /**
- * Feature module for the Article functionality
+ * ArticleModule contains all components and services related to the article feature.
  * 
- * This module contains components related to viewing an article, including:
- * - The main article page component
+ * This module is responsible for:
+ * - Displaying a single article
+ * - Showing article comments
  * - Article actions (edit, delete, favorite)
- * - Comment components for displaying and adding comments
- * 
- * The module is configured for lazy loading through the ArticleRoutingModule
- * which defines the routes for viewing individual articles.
+ * - Comment actions (add, delete)
  */
 @NgModule({
   imports: [
     // Angular built-in modules
     CommonModule,
-    RouterModule,
-    ReactiveFormsModule,
+    FormsModule,
     
-    // Feature routing module
-    ArticleRoutingModule
+    // Feature routing
+    ArticleRoutingModule,
+    
+    // Shared module for common components
+    SharedModule
   ],
   declarations: [
-    // Page components
-    ArticleComponent, // Converted from ArticleCtrl
+    // Page component
+    ArticlePageComponent,
     
-    // Feature components
+    // Feature-specific components
     ArticleActionsComponent,
     CommentComponent
   ],
   providers: [
-    // Any article-specific services would go here
-    // Core services are provided in CoreModule
-  ],
-  exports: [
-    // Export components that might be used in other modules
-    ArticleActionsComponent,
-    CommentComponent
+    // These services are already provided in CoreModule,
+    // but listed here for clarity on dependencies
+    ArticlesService,
+    CommentsService
   ]
 })
 export class ArticleModule { }

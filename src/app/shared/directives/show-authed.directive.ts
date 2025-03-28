@@ -20,7 +20,7 @@ export class ShowAuthedDirective implements OnInit, OnDestroy {
   @Input('appShowAuthed') showWhenAuthed: boolean = false;
   
   // Subscription to user changes
-  private userSubscription: Subscription;
+  private userSubscription: Subscription = new Subscription();
 
   constructor(
     private userService: UserService,
@@ -29,12 +29,11 @@ export class ShowAuthedDirective implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    // Subscribe to the current user observable from UserService
-    // This replaces the $watch functionality from AngularJS
-    this.userSubscription = this.userService.currentUser.subscribe(
-      (userData) => {
+    // Subscribe to the authentication state observable from UserService
+    this.userSubscription = this.userService.isAuthenticated.subscribe(
+      (isAuthenticated) => {
         // If user is authenticated
-        if (userData) {
+        if (isAuthenticated) {
           if (this.showWhenAuthed) {
             // Show element if showWhenAuthed is true
             this.renderer.setStyle(this.el.nativeElement, 'display', 'inherit');
@@ -59,8 +58,6 @@ export class ShowAuthedDirective implements OnInit, OnDestroy {
   ngOnDestroy() {
     // Clean up subscription when directive is destroyed
     // This prevents memory leaks
-    if (this.userSubscription) {
-      this.userSubscription.unsubscribe();
-    }
+    this.userSubscription.unsubscribe();
   }
 }
