@@ -12,6 +12,10 @@ import { environment } from '../../../environments/environment';
 export class ApiConfig {
   readonly apiUrl: string = environment.api_url;
   
+  constructor() {
+    console.log('API Config initialized with base URL:', this.apiUrl);
+  }
+  
   // Authentication endpoints
   readonly auth = {
     login: `${this.apiUrl}/users/login`,

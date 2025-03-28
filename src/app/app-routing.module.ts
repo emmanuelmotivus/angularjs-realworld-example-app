@@ -11,8 +11,6 @@ const routes: Routes = [
         path: '',
         loadChildren: () => import('./features/home/home.module').then(m => m.HomeModule)
       },
-      // Temporarily commented out routes that depend on missing modules
-      /*
       {
         path: 'login',
         loadChildren: () => import('./features/auth/auth.module').then(m => m.AuthModule)
@@ -21,6 +19,8 @@ const routes: Routes = [
         path: 'register',
         loadChildren: () => import('./features/auth/auth.module').then(m => m.AuthModule)
       },
+      // Temporarily commented out routes that depend on missing modules
+      /*
       {
         path: 'settings',
         loadChildren: () => import('./features/settings/settings.module').then(m => m.SettingsModule),

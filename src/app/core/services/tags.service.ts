@@ -28,6 +28,7 @@ export class TagsService {
    * @returns Observable with an array of tag names
    */
   getAll(): Observable<string[]> {
+    console.log('Fetching tags from:', this.apiConfig.tags);
     return this.http.get<TagsResponse>(this.apiConfig.tags)
       .pipe(
         map(response => response.tags),

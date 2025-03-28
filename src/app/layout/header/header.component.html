@@ -13,27 +13,27 @@
       
       <!-- Only show if user is authenticated -->
       <ng-container *ngIf="currentUser">
-        <!-- New Article -->
+        <!-- Temporarily disabled until editor module is implemented -->
+        <!-- 
         <li class="nav-item">
           <a class="nav-link" routerLink="/editor" routerLinkActive="active">
             <i class="ion-compose"></i>&nbsp;New Article
           </a>
         </li>
         
-        <!-- Settings -->
         <li class="nav-item">
           <a class="nav-link" routerLink="/settings" routerLinkActive="active">
             <i class="ion-gear-a"></i>&nbsp;Settings
           </a>
         </li>
         
-        <!-- User profile -->
         <li class="nav-item">
           <a class="nav-link" [routerLink]="['/profile', currentUser.username]" routerLinkActive="active">
             <img [src]="currentUser.image" *ngIf="currentUser.image" class="user-pic" />
             {{ currentUser.username }}
           </a>
         </li>
+        -->
       </ng-container>
       
       <!-- Only show if user is not authenticated -->

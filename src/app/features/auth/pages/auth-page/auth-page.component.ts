@@ -1,74 +1,63 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+
 import { UserService } from '../../../../core/services/user.service';
-import { Errors } from '../../../../core/models/errors.model';
 
 @Component({
   selector: 'app-auth-page',
-  templateUrl: './auth-page.component.html',
-  styleUrls: ['./auth-page.component.scss']
+  templateUrl: './auth-page.component.html'
 })
 export class AuthPageComponent implements OnInit {
-  // Form properties
-  authForm: FormGroup;
+  authType: string = '';
+  title: string = '';
+  errors: {[key: string]: string[]} = {};
   isSubmitting = false;
-  authType = '';
-  title = '';
-  errors: Errors = {errors: {}};
+  authForm: FormGroup;
 
   constructor(
-    private userService: UserService,
-    private router: Router,
     private route: ActivatedRoute,
+    private router: Router,
+    private userService: UserService,
     private fb: FormBuilder
   ) {
-    // Create form group using FormBuilder
+    // Initialize the form group
     this.authForm = this.fb.group({
       'email': ['', Validators.required],
       'password': ['', Validators.required]
     });
   }
 
-  ngOnInit(): void {
-    // Get the current route data to determine auth type (login/register)
-    this.route.data.subscribe(data => {
-      this.title = data.title;
-      
-      // Get auth type from the route path
-      this.authType = this.router.url.includes('login') ? 'login' : 'register';
-      
-      // If this is register page, add username field
-      if (this.authType === 'register') {
-        this.authForm.addControl('username', this.fb.control('', Validators.required));
-      }
-    });
+  ngOnInit() {
+    // Get the auth type from the current URL
+    // Using router.url since that's more reliable than route.snapshot in lazy-loaded modules
+    const url = this.router.url;
+    this.authType = url.includes('login') ? 'login' : 'register';
+    this.title = (this.authType === 'login') ? 'Sign in' : 'Sign up';
+    
+    // If this is the registration page, add username form control
+    if (this.authType === 'register') {
+      this.authForm.addControl('username', new FormControl('', Validators.required));
+    }
   }
 
-  /**
-   * Submit the authentication form
-   * Replaces the original submitForm() method from AngularJS controller
-   */
-  submitForm(): void {
+  submitForm() {
     this.isSubmitting = true;
-    this.errors = {errors: {}};
+    this.errors = {};
 
-    // Get form values
     const credentials = this.authForm.value;
     
-    // Call the user service for authentication
-    this.userService.attemptAuth(this.authType, credentials)
-      .subscribe(
-        // Success callback
-        () => {
-          // Navigate to home page on successful authentication
-          this.router.navigateByUrl('/');
-        },
-        // Error callback
-        err => {
-          this.errors = err;
-          this.isSubmitting = false;
-        }
-      );
+    // Convert string authType to the expected 'login' or 'register' type
+    const authType = this.authType === 'login' ? 'login' : 'register';
+    
+    this.userService
+    .attemptAuth(authType, credentials)
+    .subscribe(
+      data => this.router.navigateByUrl('/'),
+      err => {
+        this.errors = err;
+        this.isSubmitting = false;
+      }
+    );
   }
 }

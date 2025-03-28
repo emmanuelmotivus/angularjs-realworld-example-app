@@ -30,6 +30,7 @@ export class ArticleListComponent implements OnInit, OnChanges {
 
   runQuery() {
     this.loading = true;
+    console.log('Running article query with config:', this.config);
     
     // Create limit and offset query params
     const queryConfig = {
@@ -47,9 +48,14 @@ export class ArticleListComponent implements OnInit, OnChanges {
         data => {
           this.loading = false;
           this.articles = data.articles;
+          console.log('Feed articles loaded:', data.articles.length);
           
           // Calculate total pages
           this.totalPages = Math.ceil(data.articlesCount / this.limit);
+        },
+        error => {
+          this.loading = false;
+          console.error('Error loading feed:', error);
         }
       );
     } else {
@@ -57,9 +63,14 @@ export class ArticleListComponent implements OnInit, OnChanges {
         data => {
           this.loading = false;
           this.articles = data.articles;
+          console.log('All articles loaded:', data.articles.length);
           
           // Calculate total pages
           this.totalPages = Math.ceil(data.articlesCount / this.limit);
+        },
+        error => {
+          this.loading = false;
+          console.error('Error loading articles:', error);
         }
       );
     }

@@ -9,11 +9,10 @@ import { AppComponent } from './app.component';
 
 // Feature Modules
 import { HomeModule } from './features/home/home.module';
+import { AuthModule } from './features/auth/auth.module';
 // Temporarily commented out modules that aren't ready
-// import { AuthModule } from './features/auth/auth.module';
 // import { SettingsModule } from './features/settings/settings.module';
 // import { ProfileModule } from './features/profile/profile.module';
-// import { EditorModule } from './features/editor/editor.module';
 import { ArticleModule } from './features/article/article.module';
 
 // Core Module (contains services, interceptors, etc.)
@@ -70,10 +69,9 @@ import { AuthInterceptor } from './core/interceptors/auth.interceptor';
     
     // Feature Modules
     HomeModule,
-    // AuthModule, // Temporarily commented out
+    AuthModule,
     // SettingsModule, // Temporarily commented out
     // ProfileModule, // Temporarily commented out
-    // EditorModule, // Temporarily commented out
     ArticleModule
   ],
   providers: [
