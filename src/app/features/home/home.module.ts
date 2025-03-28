@@ -3,17 +3,13 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 // Components
-import { HomeComponent } from './home.component';
-import { ArticleListComponent } from './components/article-list/article-list.component';
-import { TagListComponent } from './components/tag-list/tag-list.component';
-import { FeedToggleComponent } from './components/feed-toggle/feed-toggle.component';
+import { HomePageComponent } from './pages/home-page/home-page.component';
 
 // Services
-import { HomeService } from './services/home.service';
 import { TagsService } from '../../core/services/tags.service';
 
 // Routes
-import { HOME_ROUTES } from './home-routing.module';
+import { HomeRoutingModule, HOME_ROUTES } from './home-routing.module';
 
 // Shared components and modules
 import { SharedModule } from '../../shared/shared.module';
@@ -38,27 +34,18 @@ import { SharedModule } from '../../shared/shared.module';
     CommonModule,
     
     // Feature routing
-    RouterModule.forChild(HOME_ROUTES),
+    HomeRoutingModule,
     
     // Application shared module (contains common components, directives, and pipes)
     SharedModule
   ],
   declarations: [
     // Main page component
-    HomeComponent,
-    
-    // Feature-specific components
-    ArticleListComponent,
-    TagListComponent,
-    FeedToggleComponent
+    HomePageComponent
   ],
   providers: [
     // Feature-specific services
-    HomeService,
-    
-    // Services needed by this module but defined in core
-    // (They're already provided in CoreModule, but listed here for clarity)
-    // TagsService
+    TagsService
   ]
 })
 export class HomeModule { }

@@ -3,7 +3,7 @@ import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpErrorResponse
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { JwtService } from '../services/jwt.service';
-import { AppConstants } from '../../config/app.constants';
+import { AppConstants } from '../services/app-constants.service';
 import { Router } from '@angular/router';
 
 /**
@@ -14,7 +14,9 @@ import { Router } from '@angular/router';
  * 1. Adding Authorization headers to API requests when a JWT token is available
  * 2. Handling 401 Unauthorized responses by clearing the token and redirecting
  */
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class AuthInterceptor implements HttpInterceptor {
   
   constructor(
@@ -30,11 +32,11 @@ export class AuthInterceptor implements HttpInterceptor {
    */
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // Check if the request is going to our API and if we have a token
-    if (request.url.indexOf(this.appConstants.api) === 0 && this.jwtService.get()) {
+    if (request.url.indexOf(this.appConstants.api) === 0 && this.jwtService.getToken()) {
       // Clone the request to add the Authorization header
       request = request.clone({
         setHeaders: {
-          Authorization: `Token ${this.jwtService.get()}`
+          Authorization: `Token ${this.jwtService.getToken()}`
         }
       });
     }
@@ -45,7 +47,7 @@ export class AuthInterceptor implements HttpInterceptor {
         // Handle 401 Unauthorized errors
         if (error.status === 401) {
           // Clear JWT token
-          this.jwtService.destroy();
+          this.jwtService.destroyToken();
           
           // Instead of hard page reload, use Angular Router to navigate
           // This preserves the Angular app state better than window.location.reload()

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // Components
 import { ListErrorsComponent } from './components/list-errors/list-errors.component';
@@ -13,6 +14,9 @@ import { ListPaginationComponent } from './components/article-helpers/list-pagin
 
 // Directives
 import { ShowAuthedDirective } from './directives/show-authed.directive';
+
+// Pipes
+import { MarkdownPipe } from './pipes/markdown.pipe';
 
 /**
  * SharedModule contains common components, directives, and pipes that are used
@@ -39,7 +43,9 @@ import { ShowAuthedDirective } from './directives/show-authed.directive';
 @NgModule({
   imports: [
     CommonModule,
-    RouterModule
+    RouterModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   declarations: [
     // Components
@@ -52,11 +58,17 @@ import { ShowAuthedDirective } from './directives/show-authed.directive';
     ListPaginationComponent,
     
     // Directives
-    ShowAuthedDirective
+    ShowAuthedDirective,
+    
+    // Pipes
+    MarkdownPipe
   ],
   exports: [
-    // Re-export CommonModule so importers of SharedModule get access to ngIf, ngFor, etc.
+    // Re-export Angular modules
     CommonModule,
+    RouterModule,
+    FormsModule,
+    ReactiveFormsModule,
     
     // Components
     ListErrorsComponent,
@@ -68,7 +80,10 @@ import { ShowAuthedDirective } from './directives/show-authed.directive';
     ListPaginationComponent,
     
     // Directives
-    ShowAuthedDirective
+    ShowAuthedDirective,
+    
+    // Pipes
+    MarkdownPipe
   ]
 })
 export class SharedModule {}

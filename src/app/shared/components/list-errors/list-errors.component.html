@@ -1,5 +1,5 @@
-<ul class="error-messages" *ngIf="errors">
-  <li *ngFor="let key of objectKeys(errors)">
-    {{ key }} {{ errors[key] }}
+<ul class="error-messages" *ngIf="errorList && errorList.length">
+  <li *ngFor="let error of errorList">
+    {{ error }}
   </li>
 </ul>

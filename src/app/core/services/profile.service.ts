@@ -4,21 +4,8 @@ import { Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 
-// Import environment configuration instead of AppConstants
-import { environment } from '../../../environments/environment';
-
-// Define Profile interface for type safety
-export interface Profile {
-  username: string;
-  bio: string;
-  image: string;
-  following: boolean;
-}
-
-// Response interfaces for type safety
-interface ProfileResponse {
-  profile: Profile;
-}
+import { ApiConfig } from '../config/api.config';
+import { Profile, ProfileResponse } from '../models/profile.model';
 
 /**
  * Profile service responsible for managing user profile operations
@@ -35,11 +22,9 @@ interface ProfileResponse {
   providedIn: 'root' // Makes the service tree-shakable
 })
 export class ProfileService {
-  // API URL from environment configuration
-  private apiUrl = environment.api_url;
-
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private apiConfig: ApiConfig
   ) {}
 
   /**
@@ -49,7 +34,7 @@ export class ProfileService {
    * @returns Observable with profile data
    */
   get(username: string): Observable<Profile> {
-    return this.http.get<ProfileResponse>(`${this.apiUrl}/profiles/${username}`)
+    return this.http.get<ProfileResponse>(this.apiConfig.profiles.get(username))
       .pipe(
         map(response => response.profile),
         catchError(error => {
@@ -66,9 +51,10 @@ export class ProfileService {
    * @param username The username to follow
    * @returns Observable with updated profile data
    */
-  follow(username: string): Observable<ProfileResponse> {
-    return this.http.post<ProfileResponse>(`${this.apiUrl}/profiles/${username}/follow`, {})
+  follow(username: string): Observable<Profile> {
+    return this.http.post<ProfileResponse>(this.apiConfig.profiles.follow(username), {})
       .pipe(
+        map(response => response.profile),
         catchError(error => {
           console.error('Error following user:', error);
           return throwError(() => new Error('Could not follow user'));
@@ -82,9 +68,10 @@ export class ProfileService {
    * @param username The username to unfollow
    * @returns Observable with updated profile data
    */
-  unfollow(username: string): Observable<ProfileResponse> {
-    return this.http.delete<ProfileResponse>(`${this.apiUrl}/profiles/${username}/follow`)
+  unfollow(username: string): Observable<Profile> {
+    return this.http.delete<ProfileResponse>(this.apiConfig.profiles.unfollow(username))
       .pipe(
+        map(response => response.profile),
         catchError(error => {
           console.error('Error unfollowing user:', error);
           return throwError(() => new Error('Could not unfollow user'));

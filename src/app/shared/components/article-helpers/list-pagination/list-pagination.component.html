@@ -1,0 +1,9 @@
+<nav [hidden]="totalPages <= 1">
+  <ul class="pagination">
+    <li class="page-item"
+        [ngClass]="{'active': pageNumber === currentPage}"
+        *ngFor="let pageNumber of pages">
+      <a class="page-link" (click)="setPageTo(pageNumber)">{{ pageNumber }}</a>
+    </li>
+  </ul>
+</nav>

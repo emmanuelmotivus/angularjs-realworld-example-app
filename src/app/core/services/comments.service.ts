@@ -1,91 +1,74 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { throwError } from 'rxjs';
 
-// Import the environment configuration that will replace AppConstants
-import { environment } from '../../../environments/environment';
+import { ApiConfig } from '../config/api.config';
+import { Comment, CommentsResponse, CommentResponse } from '../models/comment.model';
 
-// Define interfaces for type safety
-export interface Comment {
-  id: number;
-  body: string;
-  createdAt: string;
-  updatedAt: string;
-  author: {
-    username: string;
-    bio: string;
-    image: string;
-    following: boolean;
-  };
-}
-
-export interface CommentResponse {
-  comment: Comment;
-}
-
-export interface CommentsResponse {
-  comments: Comment[];
-}
-
+/**
+ * Comments service handles all operations related to article comments
+ */
 @Injectable({
-  providedIn: 'root' // Makes the service tree-shakable and available app-wide
+  providedIn: 'root'
 })
 export class CommentsService {
-  // API URL from environment configuration
-  private apiUrl = environment.api;
-
-  /**
-   * Constructor with Angular's dependency injection
-   * Replaced AngularJS $http with Angular's HttpClient
-   * Replaced AppConstants with environment configuration
-   */
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private apiConfig: ApiConfig
   ) {}
 
   /**
-   * Add a comment to an article
-   * @param slug - Article slug identifier
-   * @param payload - Comment body text
-   * @returns Observable of the created Comment
+   * Get all comments for an article
+   * 
+   * @param slug Article slug
+   * @returns Observable with array of comments
    */
-  add(slug: string, payload: string): Observable<Comment> {
-    return this.http.post<CommentResponse>(
-      `${this.apiUrl}/articles/${slug}/comments`,
-      { comment: { body: payload } }
-    ).pipe(
-      map(response => response.comment),
-      catchError(error => throwError(() => new Error(`Error adding comment: ${error.message}`)))
-    );
+  getAll(slug: string): Observable<Comment[]> {
+    return this.http.get<CommentsResponse>(this.apiConfig.comments.get(slug))
+      .pipe(
+        map(response => response.comments),
+        catchError(error => {
+          console.error('Error fetching comments:', error);
+          return throwError(() => new Error('Could not load comments'));
+        })
+      );
   }
 
   /**
-   * Get all comments for an article
-   * @param slug - Article slug identifier
-   * @returns Observable of Comment array
+   * Create a new comment for an article
+   * 
+   * @param slug Article slug
+   * @param commentBody Comment content
+   * @returns Observable with created comment
    */
-  getAll(slug: string): Observable<Comment[]> {
-    return this.http.get<CommentsResponse>(
-      `${this.apiUrl}/articles/${slug}/comments`
+  add(slug: string, commentBody: string): Observable<Comment> {
+    return this.http.post<CommentResponse>(
+      this.apiConfig.comments.create(slug),
+      { comment: { body: commentBody } }
     ).pipe(
-      map(response => response.comments),
-      catchError(error => throwError(() => new Error(`Error fetching comments: ${error.message}`)))
+      map(response => response.comment),
+      catchError(error => {
+        console.error('Error adding comment:', error);
+        return throwError(() => new Error('Could not add comment'));
+      })
     );
   }
 
   /**
    * Delete a comment from an article
-   * @param commentId - ID of the comment to delete
-   * @param articleSlug - Article slug identifier
-   * @returns Observable of the HTTP response
+   * 
+   * @param slug Article slug
+   * @param commentId Comment ID to delete
+   * @returns Observable with HTTP response
    */
-  destroy(commentId: number, articleSlug: string): Observable<any> {
-    return this.http.delete(
-      `${this.apiUrl}/articles/${articleSlug}/comments/${commentId}`
-    ).pipe(
-      catchError(error => throwError(() => new Error(`Error deleting comment: ${error.message}`)))
-    );
+  delete(slug: string, commentId: number): Observable<any> {
+    return this.http.delete(this.apiConfig.comments.delete(slug, commentId))
+      .pipe(
+        catchError(error => {
+          console.error('Error deleting comment:', error);
+          return throwError(() => new Error('Could not delete comment'));
+        })
+      );
   }
 }

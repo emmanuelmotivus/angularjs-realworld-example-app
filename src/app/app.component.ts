@@ -1,26 +1,22 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { filter, map, mergeMap } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 
-// Import the AppConstants service that would be migrated from AngularJS
-import { AppConstants } from '../core/services/app-constants.service';
+// Import the AppConstants service 
+import { AppConstants } from './core/services/app-constants.service';
 
 @Component({
   selector: 'app-root',
-  template: `
-    <app-header></app-header>
-    <router-outlet></router-outlet>
-    <app-footer></app-footer>
-  `
+  templateUrl: './app.component.html'
 })
 export class AppComponent implements OnInit, OnDestroy {
   // Class property to store the page title
   pageTitle: string = '';
   
   // Subscription to manage router events
-  private routerSubscription: Subscription;
+  private routerSubscription: Subscription = new Subscription();
 
   constructor(
     private router: Router,
