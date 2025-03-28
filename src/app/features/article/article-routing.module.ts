@@ -1,7 +1,6 @@
 import { NgModule, Injectable } from '@angular/core';
 import { RouterModule, Routes, ActivatedRouteSnapshot, Resolve } from '@angular/router';
 import { Observable } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
 
 import { ArticlePageComponent } from './pages/article-page/article-page.component';
 import { ArticlesService } from '../../core/services/articles.service';

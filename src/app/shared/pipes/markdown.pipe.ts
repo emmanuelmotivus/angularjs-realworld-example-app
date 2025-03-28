@@ -6,6 +6,15 @@ import { marked } from 'marked';
 })
 export class MarkdownPipe implements PipeTransform {
   transform(content: string): string {
-    return content ? marked(content) : '';
+    if (!content) {
+      return '';
+    }
+    
+    try {
+      return marked(content);
+    } catch (error) {
+      console.error('Error transforming markdown:', error);
+      return content; // Return the original content if transformation fails
+    }
   }
 }

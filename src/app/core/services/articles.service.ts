@@ -132,6 +132,18 @@ export class ArticlesService {
    * @returns Observable of the article
    */
   get(slug: string): Observable<Article> {
+    // Use mock data instead of HTTP request
+    const article = this.mockArticlesService.getArticle(slug);
+    
+    if (article) {
+      // Create a deep copy to avoid any reference issues
+      const articleCopy = JSON.parse(JSON.stringify(article));
+      return of(articleCopy as Article);
+    } else {
+      return throwError(() => new Error(`Article not found for slug: ${slug}`));
+    }
+    
+    /* Original HTTP implementation
     // Validate slug before making the request
     if (!slug || slug.trim() === '') {
       return throwError(() => new Error('Article slug is empty'));
@@ -142,6 +154,7 @@ export class ArticlesService {
         map(response => response.article),
         catchError(err => throwError(() => new Error(err.message || 'Failed to get article')))
       );
+    */
   }
 
   /**

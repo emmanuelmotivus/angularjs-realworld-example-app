@@ -1,5 +1,5 @@
 <div class="article-page">
-  <div class="banner">
+  <div class="banner" *ngIf="article">
     <div class="container">
       <h1>{{ article.title }}</h1>
 
@@ -36,9 +36,9 @@
   <div class="container page">
     <div class="row article-content">
       <div class="col-md-12">
-        <div [innerHTML]="article.body | markdown"></div>
+        <div *ngIf="article?.body" [innerHTML]="article.body | markdown"></div>
 
-        <ul class="tag-list">
+        <ul class="tag-list" *ngIf="article?.tagList">
           <li class="tag-default tag-pill tag-outline" *ngFor="let tag of article.tagList">
             {{ tag }}
           </li>
@@ -48,7 +48,7 @@
 
     <hr />
 
-    <div class="article-actions">
+    <div class="article-actions" *ngIf="article">
       <app-article-meta [article]="article">
         <span [hidden]="!canModify">
           <a class="btn btn-sm btn-outline-secondary"

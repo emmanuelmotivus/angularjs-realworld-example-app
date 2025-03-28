@@ -39,7 +39,7 @@ const routes: Routes = [
       */
       
       {
-        path: 'article/:slug',
+        path: 'article',
         loadChildren: () => import('./features/article/article.module').then(m => m.ArticleModule)
       },
       // Temporarily commented out routes that depend on missing modules

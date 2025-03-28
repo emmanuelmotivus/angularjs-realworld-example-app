@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
 import { ApiConfig } from '../config/api.config';
 import { Comment, CommentsResponse, CommentResponse } from '../models/comment.model';
+import { MockArticlesService } from './mock/mock-articles.service';
 
 /**
  * Comments service handles all operations related to article comments
@@ -15,7 +16,8 @@ import { Comment, CommentsResponse, CommentResponse } from '../models/comment.mo
 export class CommentsService {
   constructor(
     private http: HttpClient,
-    private apiConfig: ApiConfig
+    private apiConfig: ApiConfig,
+    private mockArticlesService: MockArticlesService
   ) {}
 
   /**
@@ -25,6 +27,13 @@ export class CommentsService {
    * @returns Observable with array of comments
    */
   getAll(slug: string): Observable<Comment[]> {
+    console.log('CommentsService.getAll called with slug:', slug);
+    
+    // Use mock data instead of HTTP request
+    const comments = this.mockArticlesService.getComments(slug);
+    return of(comments as Comment[]);
+    
+    /* Original HTTP implementation
     return this.http.get<CommentsResponse>(this.apiConfig.comments.get(slug))
       .pipe(
         map(response => response.comments),
@@ -33,6 +42,7 @@ export class CommentsService {
           return throwError(() => new Error('Could not load comments'));
         })
       );
+    */
   }
 
   /**
@@ -43,6 +53,25 @@ export class CommentsService {
    * @returns Observable with created comment
    */
   add(slug: string, commentBody: string): Observable<Comment> {
+    console.log('CommentsService.add called with slug:', slug, 'and body:', commentBody);
+    
+    // Create a mock comment
+    const newComment = {
+      id: Date.now(), // Use timestamp as a unique ID
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      body: commentBody,
+      author: {
+        username: 'current-user',
+        bio: 'A mock user',
+        image: 'https://storage.googleapis.com/a1aa/image/Z8rBKMWSMPNN8tG-4SJW8YYSqWWN12oq5-UF9yBSIYc.jpg',
+        following: false
+      }
+    };
+    
+    return of(newComment as Comment);
+    
+    /* Original HTTP implementation
     return this.http.post<CommentResponse>(
       this.apiConfig.comments.create(slug),
       { comment: { body: commentBody } }
@@ -53,6 +82,7 @@ export class CommentsService {
         return throwError(() => new Error('Could not add comment'));
       })
     );
+    */
   }
 
   /**
@@ -63,6 +93,12 @@ export class CommentsService {
    * @returns Observable with HTTP response
    */
   delete(slug: string, commentId: number): Observable<any> {
+    console.log('CommentsService.delete called with slug:', slug, 'and commentId:', commentId);
+    
+    // Just return a success response
+    return of({ success: true });
+    
+    /* Original HTTP implementation
     return this.http.delete(this.apiConfig.comments.delete(slug, commentId))
       .pipe(
         catchError(error => {
@@ -70,5 +106,6 @@ export class CommentsService {
           return throwError(() => new Error('Could not delete comment'));
         })
       );
+    */
   }
 }
