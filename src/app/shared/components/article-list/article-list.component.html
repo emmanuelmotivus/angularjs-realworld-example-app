@@ -1,0 +1,49 @@
+<div class="article-preview" *ngIf="loading">
+  <div class="article-meta">
+    <div class="info">
+      Loading articles...
+    </div>
+  </div>
+</div>
+
+<div class="article-preview" *ngFor="let article of list">
+  <div class="article-meta">
+    <a [routerLink]="['/profile', article.author.username]">
+      <img [src]="article.author.image" />
+    </a>
+    <div class="info">
+      <a [routerLink]="['/profile', article.author.username]" class="author">
+        {{ article.author.username }}
+      </a>
+      <span class="date">
+        {{ article.createdAt | date: 'longDate' }}
+      </span>
+    </div>
+    <app-favorite-button
+      [article]="article"
+      class="pull-xs-right">
+    </app-favorite-button>
+  </div>
+
+  <a [routerLink]="['/article', article.slug]" class="preview-link">
+    <h1>{{ article.title }}</h1>
+    <p>{{ article.description }}</p>
+    <span>Read more...</span>
+    <ul class="tag-list">
+      <li class="tag-default tag-pill tag-outline" *ngFor="let tag of article.tagList">
+        {{ tag }}
+      </li>
+    </ul>
+  </a>
+</div>
+
+<div class="article-preview" *ngIf="list.length === 0 && !loading">
+  No articles are here... yet.
+</div>
+
+<app-pagination
+  *ngIf="list.length > 0 && !loading"
+  [totalPages]="listConfig.totalPages"
+  [currentPage]="listConfig.currentPage"
+  (setPage)="setPageTo($event)">
+</app-pagination>

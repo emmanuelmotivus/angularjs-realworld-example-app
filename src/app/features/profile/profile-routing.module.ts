@@ -1,0 +1,40 @@
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { ProfileComponent } from './profile.component';
+import { ProfileArticlesComponent } from './profile-articles/profile-articles.component';
+import { ProfileResolver } from './profile.resolver';
+
+const routes: Routes = [
+  {
+    path: '@:username',
+    component: ProfileComponent,
+    resolve: {
+      profile: ProfileResolver
+    },
+    children: [
+      {
+        path: '',
+        component: ProfileArticlesComponent,
+        data: { 
+          title: 'Profile',
+          listType: 'all' // Used to distinguish between all articles and favorites
+        }
+      },
+      {
+        path: 'favorites',
+        component: ProfileArticlesComponent,
+        data: { 
+          title: 'Favorites',
+          listType: 'favorites' // Used to distinguish between all articles and favorites
+        }
+      }
+    ]
+  }
+];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule],
+  providers: [ProfileResolver]
+})
+export class ProfileRoutingModule { }
