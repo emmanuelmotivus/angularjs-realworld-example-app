@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Conduit Simple</title>
+    <link href="//code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Titillium+Web:700|Source+Serif+Pro:400,700|Merriweather+Sans:400,700|Source+Sans+Pro:400,300,600,700,300italic,400italic,600italic,700italic" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="//demo.productionready.io/main.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      .debug-info {
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        background: rgba(0,0,0,0.7);
+        color: #fff;
+        padding: 10px;
+        font-family: monospace;
+        font-size: 12px;
+        max-width: 400px;
+        max-height: 200px;
+        overflow: auto;
+        z-index: 9999;
+      }
+    </style>
+  </head>
+  <body ng-app="simpleApp">
+    <div ng-controller="SimpleController as vm">
+      <!-- Header -->
+      <nav class="navbar navbar-light">
+        <div class="container">
+          <a class="navbar-brand" href="/">conduit</a>
+          <ul class="nav navbar-nav pull-xs-right">
+            <li class="nav-item">
+              <a class="nav-link" href="/">Home</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      
+      <!-- Main content -->
+      <div class="home-page">
+        <div class="banner">
+          <div class="container">
+            <h1 class="logo-font">conduit</h1>
+            <p>A place to share your knowledge.</p>
+          </div>
+        </div>
+        <div class="container page">
+          <div class="row">
+            <div class="col-md-9">
+              <div class="feed-toggle">
+                <ul class="nav nav-pills outline-active">
+                  <li class="nav-item">
+                    <a class="nav-link active">Global Feed</a>
+                  </li>
+                </ul>
+              </div>
+              <p>{{vm.message}}</p>
+            </div>
+            <div class="col-md-3">
+              <div class="sidebar">
+                <p>Popular Tags</p>
+                <div class="tag-list">
+                  <a class="tag-pill tag-default">programming</a>
+                  <a class="tag-pill tag-default">javascript</a>
+                  <a class="tag-pill tag-default">angular</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Footer -->
+      <footer>
+        <div class="container">
+          <a href="/" class="logo-font">conduit</a>
+          <span class="attribution">
+            An interactive learning project from <a href="https://thinkster.io">Thinkster</a>. 
+            Code &amp; design licensed under MIT.
+          </span>
+        </div>
+      </footer>
+    </div>
+    
+    <!-- Debug info panel -->
+    <div class="debug-info" id="debug-info">Loading AngularJS...</div>
+    
+    <!-- AngularJS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.js"></script>
+    
+    <script>
+      // Create a simple Angular app
+      angular.module('simpleApp', [])
+        .controller('SimpleController', function() {
+          var vm = this;
+          vm.message = 'This is a simple AngularJS application with no ui-router or complex dependencies.';
+        });
+      
+      // Debug info
+      document.getElementById('debug-info').innerHTML = 'Simple Angular app loaded!';
+    </script>
+  </body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Conduit Debug</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
+    pre { background: #f4f4f4; padding: 10px; border-radius: 5px; overflow: auto; }
+    .error { color: red; }
+    .success { color: green; }
+  </style>
+</head>
+<body>
+  <h1>Conduit Application Debug</h1>
+  
+  <div>
+    <h2>1. Testing AngularJS</h2>
+    <div id="angular-version"></div>
+  </div>
+  
+  <div>
+    <h2>2. Testing App Module</h2>
+    <div id="app-test"></div>
+  </div>
+  
+  <div>
+    <h2>3. File Loading Status</h2>
+    <div id="file-status"></div>
+  </div>
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <script>
+    document.getElementById('angular-version').innerHTML = 
+      '<span class="success">✓</span> AngularJS loaded: version ' + angular.version.full;
+    
+    // Test if we can create a simple angular module
+    try {
+      var testModule = angular.module('testModule', []);
+      document.getElementById('app-test').innerHTML = 
+        '<span class="success">✓</span> Successfully created test Angular module';
+    } catch (e) {
+      document.getElementById('app-test').innerHTML = 
+        '<span class="error">✗</span> Error creating Angular module: ' + e.message;
+    }
+    
+    // Check if our app.js and other key files are loading
+    var filesToCheck = [
+      'js/config/app.constants.js',
+      'js/app.js',
+      'js/config/app.templates.js',
+      'js/config/app.config.js',
+      'js/config/app.run.js',
+      'js/layout/index.js',
+      'js/home/index.js'
+    ];
+    
+    var fileStatus = document.getElementById('file-status');
+    
+    filesToCheck.forEach(function(file) {
+      var xhr = new XMLHttpRequest();
+      xhr.open('HEAD', file, true);
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+          var status = xhr.status === 200 ? 
+            '<span class="success">✓</span> ' : 
+            '<span class="error">✗</span> ';
+          fileStatus.innerHTML += status + file + ' - ' + xhr.status + '<br>';
+        }
+      };
+      xhr.send();
+    });
+  </script>
+</body>
+</html>

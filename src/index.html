@@ -2,22 +2,57 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <!-- Replaced ng-bind with Angular's Title service which will be used in components -->
     <title>Conduit</title>
     <link href="//code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css">
     <link href="//fonts.googleapis.com/css?family=Titillium+Web:700|Source+Serif+Pro:400,700|Merriweather+Sans:400,700|Source+Sans+Pro:400,300,600,700,300italic,400italic,600italic,700italic" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="//demo.productionready.io/main.css">
-    <!-- Angular requires these meta tags -->
     <base href="/">
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
-    <!-- Replaced ui-view with app-root which is the selector for the root Angular component -->
-    <app-root></app-root>
-
-    <!-- Angular CLI will generate these bundle files -->
-    <script src="runtime.js"></script>
-    <script src="polyfills.js"></script>
-    <script src="main.js"></script>
+    <!-- Root element for Angular app -->
+    <div ui-view>
+      <div class="text-center p-5">
+        <h2>Loading Conduit...</h2>
+        <p>Please wait while the application initializes.</p>
+      </div>
+    </div>
+    
+    <!-- AngularJS and dependencies -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-sanitize.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/1.0.30/angular-ui-router.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.0.10/marked.min.js"></script>
+    
+    <!-- App initialization -->
+    <script src="js/app.js"></script>
+    
+    <!-- Config -->
+    <script src="js/config/app.templates.js"></script>
+    <script src="js/config/app.constants.js"></script>
+    <script src="js/config/app.config.js"></script>
+    <script src="js/config/app.run.js"></script>
+    <script src="js/config/auth.interceptor.js"></script>
+    
+    <!-- Modules -->
+    <script src="js/services/index.js"></script>
+    <script src="js/layout/index.js"></script>
+    <script src="js/components/index.js"></script>
+    <script src="js/home/index.js"></script>
+    <script src="js/profile/index.js"></script>
+    <script src="js/article/index.js"></script>
+    <script src="js/auth/index.js"></script>
+    <script src="js/settings/index.js"></script>
+    <script src="js/editor/index.js"></script>
+    
+    <!-- Components -->
+    <script src="js/layout/header.component.js"></script>
+    <script src="js/layout/footer.component.js"></script>
+    
+    <!-- Features -->
+    <script src="js/home/home.controller.js"></script>
+    <script src="js/home/home.config.js"></script>
+    <script src="js/auth/auth.controller.js"></script>
+    <script src="js/auth/auth.config.js"></script>
   </body>
 </html>
