@@ -64,7 +64,7 @@ export class CommentsService {
       author: {
         username: 'current-user',
         bio: 'A mock user',
-        image: 'https://storage.googleapis.com/a1aa/image/Z8rBKMWSMPNN8tG-4SJW8YYSqWWN12oq5-UF9yBSIYc.jpg',
+        image: 'https://res.cloudinary.com/dmela7d4j/image/upload/v1743170698/nick_gdf8ru.jpg',
         following: false
       }
     };

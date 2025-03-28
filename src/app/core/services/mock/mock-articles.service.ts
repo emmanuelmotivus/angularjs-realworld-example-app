@@ -22,7 +22,7 @@ export class MockArticlesService {
       author: {
         username: 'jake',
         bio: 'I work at statefarm',
-        image: 'https://storage.googleapis.com/a1aa/image/Z8rBKMWSMPNN8tG-4SJW8YYSqWWN12oq5-UF9yBSIYc.jpg',
+        image: 'https://res.cloudinary.com/dmela7d4j/image/upload/v1743170698/jake_ev6wue.jpg',
         following: false
       }
     },
@@ -39,7 +39,7 @@ export class MockArticlesService {
       author: {
         username: 'sarah',
         bio: 'Frontend Developer',
-        image: 'https://storage.googleapis.com/a1aa/image/Z8rBKMWSMPNN8tG-4SJW8YYSqWWN12oq5-UF9yBSIYc.jpg',
+        image: 'https://res.cloudinary.com/dmela7d4j/image/upload/v1743170698/sarah_krdasb.jpg',
         following: false
       }
     },
@@ -56,7 +56,7 @@ export class MockArticlesService {
       author: {
         username: 'mike',
         bio: 'Software Engineer',
-        image: 'https://storage.googleapis.com/a1aa/image/Z8rBKMWSMPNN8tG-4SJW8YYSqWWN12oq5-UF9yBSIYc.jpg',
+        image: 'https://res.cloudinary.com/dmela7d4j/image/upload/v1743170698/mike_q4lyoj.jpg',
         following: true
       }
     },
@@ -73,7 +73,7 @@ export class MockArticlesService {
       author: {
         username: 'emily',
         bio: 'TypeScript enthusiast',
-        image: 'https://storage.googleapis.com/a1aa/image/Z8rBKMWSMPNN8tG-4SJW8YYSqWWN12oq5-UF9yBSIYc.jpg',
+        image: 'https://res.cloudinary.com/dmela7d4j/image/upload/v1743170698/anna_kle2pz.jpg',
         following: false
       }
     },
@@ -90,7 +90,7 @@ export class MockArticlesService {
       author: {
         username: 'david',
         bio: 'DevOps Engineer',
-        image: 'https://storage.googleapis.com/a1aa/image/Z8rBKMWSMPNN8tG-4SJW8YYSqWWN12oq5-UF9yBSIYc.jpg',
+        image: 'https://res.cloudinary.com/dmela7d4j/image/upload/v1743170698/mark_bfj1bf.jpg',
         following: false
       }
     }
@@ -118,7 +118,7 @@ export class MockArticlesService {
         author: {
           username: 'johndoe',
           bio: 'Tech enthusiast',
-          image: 'https://storage.googleapis.com/a1aa/image/Z8rBKMWSMPNN8tG-4SJW8YYSqWWN12oq5-UF9yBSIYc.jpg',
+          image: 'https://res.cloudinary.com/dmela7d4j/image/upload/v1743170698/johndoe_vohqjy.jpg',
           following: false
         }
       },
@@ -130,7 +130,7 @@ export class MockArticlesService {
         author: {
           username: 'jane',
           bio: 'Software Developer',
-          image: 'https://storage.googleapis.com/a1aa/image/Z8rBKMWSMPNN8tG-4SJW8YYSqWWN12oq5-UF9yBSIYc.jpg',
+          image: 'https://res.cloudinary.com/dmela7d4j/image/upload/v1743170698/beth_u6q6ca.jpg',
           following: true
         }
       }
