@@ -1,10 +1,13 @@
 /**
- * PLACEHOLDER FILE
- *
- * This file was generated as a placeholder because the following source files were not found:
- * - N/A
- *
- * Please locate the source files and re-run the migration or manually create this file.
+ * This file includes polyfills needed by Angular and is loaded before the app.
+ * You can add your own extra polyfills to this file.
  */
 
-// TODO: Implement this file
+/***************************************************************************************************
+ * Zone JS is required by default for Angular itself.
+ */
+import 'zone.js';  // Included with Angular CLI.
+
+/***************************************************************************************************
+ * APPLICATION IMPORTS
+ */
