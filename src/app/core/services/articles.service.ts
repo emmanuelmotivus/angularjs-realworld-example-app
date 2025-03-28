@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { ApiConfig } from '../config/api.config';
 import { Article } from '../models/article.model';
+import { MockArticlesService } from './mock/mock-articles.service';
 
 export interface ArticleResponse {
   article: Article;
@@ -33,7 +34,8 @@ export interface ArticleQueryConfig {
 export class ArticlesService {
   constructor(
     private http: HttpClient,
-    private apiConfig: ApiConfig
+    private apiConfig: ApiConfig,
+    private mockArticlesService: MockArticlesService
   ) {}
 
   /**
@@ -42,6 +44,18 @@ export class ArticlesService {
    * @returns Observable of articles response
    */
   getAll(config: ArticleQueryConfig): Observable<ArticlesResponse> {
+    console.log('ArticlesService.getAll called with config:', config);
+    
+    // Use mock data instead of HTTP request
+    const mockResponse = this.mockArticlesService.getArticles(
+      config.limit, 
+      config.offset, 
+      config.filters
+    );
+    
+    return of(mockResponse);
+    
+    /* Original HTTP implementation
     // Convert filters to HttpParams if they exist
     let params = new HttpParams();
     
@@ -70,6 +84,7 @@ export class ArticlesService {
     ).pipe(
       catchError(err => throwError(() => new Error(err.message || 'Failed to fetch articles')))
     );
+    */
   }
 
   /**
@@ -78,6 +93,18 @@ export class ArticlesService {
    * @returns Observable of articles response
    */
   getFeed(config: ArticleQueryConfig): Observable<ArticlesResponse> {
+    console.log('ArticlesService.getFeed called with config:', config);
+    
+    // For mock data, we'll return the same articles since we don't have a real feed
+    // In a real app, this would filter to show only articles from followed users
+    const mockResponse = this.mockArticlesService.getArticles(
+      config.limit, 
+      config.offset
+    );
+    
+    return of(mockResponse);
+    
+    /* Original HTTP implementation
     // Convert filters to HttpParams if they exist
     let params = new HttpParams();
     
@@ -96,6 +123,7 @@ export class ArticlesService {
     ).pipe(
       catchError(err => throwError(() => new Error(err.message || 'Failed to fetch feed')))
     );
+    */
   }
 
   /**
