@@ -1,25 +1,86 @@
-# ![Angular 1.5+ ES6 & Component API Example App](project-logo.png)
+# Conduit - Angular/AngularJS RealWorld Example Application
 
-> Example Angular 1.5+ (ES6 + Components) codebase that adheres to the [RealWorld](https://github.com/gothinkster/realworld-example-apps) spec and API.
+## Overview
+This is a simplified implementation of the [RealWorld](https://github.com/gothinkster/realworld) Medium.com clone using AngularJS with a migration path to Angular. It demonstrates a real-world application with authentication, CRUD operations, routing, and more.
 
-View the **[demo application](https://angularjs.realworld.io)** or **[learn how to build the application from scratch](https://thinkster.io/angularjs-es6-tutorial)**!
+This project represents a transitional state from AngularJS to Angular 12, showcasing how to maintain functionality during a complex migration.
 
-# Getting started
+## Features
+- Home page with banner and tag list
+- Authentication (Sign In/Sign Up)
+- Responsive layout
+- Docker deployment
 
-1. Clone repo
-2. `npm install`
-3. `gulp`
+## Getting Started
 
-Make sure you have gulp installed globally (`npm install -g gulp`)
+### Prerequisites
+- Docker installed on your system
+- Basic knowledge of AngularJS/Angular
 
-### Making requests to the backend API
+### Running with Docker
+The simplest way to run this application is using Docker:
 
-For convenience, we have a live API server running at https://conduit.productionready.io/api for the application to make requests against. You can view [the API spec here](https://github.com/GoThinkster/productionready/blob/master/api) which contains all routes & responses for the server.
+```bash
+# Build the Docker image
+docker build -t conduit-angular .
 
-The source code for the backend server (available for Node, Rails and Django) can be found in the [main RealWorld repo](https://github.com/gothinkster/realworld).
+# Run the container
+docker run -p 80:80 conduit-angular
+```
 
-If you want to change the API URL to a local server, simply edit `src/js/config/app.constants.js` and change `api` to the local server's URL (i.e. `localhost:3000/api`)
+Then access the application at http://localhost:80
 
-<br />
+### Local Development
+If you want to develop locally without Docker:
 
-[![Brought to you by Thinkster](https://raw.githubusercontent.com/gothinkster/realworld/master/media/end.png)](https://thinkster.io)
+```bash
+# Install dependencies
+npm install
+
+# Start a local server
+npx http-server src -p 8080 --cors -c-1
+```
+
+Then access the application at http://localhost:8080
+
+## Project Structure
+The project follows a feature-based organization:
+
+```
+src/
+├── js/
+│   ├── app.js                   # Main application bootstrapping
+│   ├── config/                  # App configuration
+│   ├── services/                # Data services
+│   ├── components/              # Reusable components
+│   ├── layout/                  # Layout components (header, footer)
+│   ├── home/                    # Home page feature
+│   ├── auth/                    # Authentication feature
+│   ├── profile/                 # Profile feature (WIP)
+│   ├── article/                 # Article feature (WIP)
+│   ├── editor/                  # Editor feature (WIP)
+│   └── settings/                # Settings feature (WIP)
+├── index.html                   # Main HTML entry point
+└── simple.html                  # Simplified version for debugging
+```
+
+## Migration Notes
+This project is in a transitional state from AngularJS to Angular 12. The current implementation:
+
+1. Uses AngularJS UI-Router for routing
+2. Has a component-based architecture compatible with Angular
+3. Includes preparations for upgrading to TypeScript
+
+## Docker Configuration
+The Docker setup uses a multi-stage build:
+
+1. Node.js stage to build the application
+2. NGINX stage to serve the static files
+
+The NGINX configuration includes security headers and proper single-page application routing.
+
+## License
+MIT
+
+## Contributing
+Pull requests and issues are welcome. For major changes, please open an issue first to discuss what you would like to change.

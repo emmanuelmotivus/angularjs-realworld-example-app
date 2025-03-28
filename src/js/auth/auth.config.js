@@ -1,40 +1,72 @@
-// auth-routing.module.ts
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { AuthComponent } from './auth.component';
-import { UserService } from '../services/user.service';
+angular.module('app.auth')
+.config(function($stateProvider) {
+  'ngInject';
 
-// Converting AngularJS UI-Router states to Angular Router routes
-const routes: Routes = [
-  {
-    path: 'login',
-    component: AuthComponent,
-    title: 'Sign in',
-    resolve: {
-      // Converting resolve function to a resolver that checks auth state
-      auth: () => {
-        return inject(UserService).ensureAuthIs(false);
-      }
-    }
-  },
-  {
-    path: 'register',
-    component: AuthComponent,
-    title: 'Sign up',
-    resolve: {
-      // Converting resolve function to a resolver that checks auth state
-      auth: () => {
-        return inject(UserService).ensureAuthIs(false);
-      }
-    }
-  }
-];
+  $stateProvider
+  .state('app.login', {
+    url: '/login',
+    controller: 'AuthCtrl as $ctrl',
+    template: `
+      <div class="auth-page">
+        <div class="container page">
+          <div class="row">
+            <div class="col-md-6 offset-md-3 col-xs-12">
+              <h1 class="text-xs-center">Sign In</h1>
+              <p class="text-xs-center">
+                <a ui-sref="app.register">Need an account?</a>
+              </p>
+              <form>
+                <fieldset>
+                  <fieldset class="form-group">
+                    <input class="form-control form-control-lg" type="email" placeholder="Email">
+                  </fieldset>
+                  <fieldset class="form-group">
+                    <input class="form-control form-control-lg" type="password" placeholder="Password">
+                  </fieldset>
+                  <button class="btn btn-lg btn-primary pull-xs-right" type="submit">
+                    Sign in
+                  </button>
+                </fieldset>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    `
+  })
 
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
-})
-export class AuthRoutingModule { }
-
-// We need to export the routes for the main routing module
-export const authRoutes = routes;
+  .state('app.register', {
+    url: '/register',
+    controller: 'AuthCtrl as $ctrl',
+    template: `
+      <div class="auth-page">
+        <div class="container page">
+          <div class="row">
+            <div class="col-md-6 offset-md-3 col-xs-12">
+              <h1 class="text-xs-center">Sign Up</h1>
+              <p class="text-xs-center">
+                <a ui-sref="app.login">Have an account?</a>
+              </p>
+              <form>
+                <fieldset>
+                  <fieldset class="form-group">
+                    <input class="form-control form-control-lg" type="text" placeholder="Username">
+                  </fieldset>
+                  <fieldset class="form-group">
+                    <input class="form-control form-control-lg" type="email" placeholder="Email">
+                  </fieldset>
+                  <fieldset class="form-group">
+                    <input class="form-control form-control-lg" type="password" placeholder="Password">
+                  </fieldset>
+                  <button class="btn btn-lg btn-primary pull-xs-right" type="submit">
+                    Sign up
+                  </button>
+                </fieldset>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    `
+  });
+});

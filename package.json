@@ -43,16 +43,4 @@
   "overrides": {
     "graceful-fs": "^4.2.11"
   }
-  /* 
-  Changes made:
-  1. Removed AngularJS dependencies (angular, angular-ui-router)
-  2. Removed build tools related to AngularJS (babel, browserify, gulp, etc.)
-  3. Added Angular 12 core packages (@angular/*)
-  4. Added RxJS and Zone.js which are required for Angular
-  5. Added TypeScript and related type definitions
-  6. Added Angular CLI and build tools
-  7. Added standard Angular scripts for development
-  8. Updated marked to a compatible version
-  9. Kept the overrides section for graceful-fs
-  */
 }

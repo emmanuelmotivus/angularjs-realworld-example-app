@@ -1,0 +1,44 @@
+# Use Node.js as the base image
+FROM node:16
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Install http-server globally
+RUN npm install -g http-server
+
+# Copy the entire project
+COPY . .
+
+# Create a simple index.html for debugging if the main one doesn't load
+RUN echo '<!DOCTYPE html>\n\
+<html>\n\
+<head>\n\
+  <title>Conduit Debug</title>\n\
+  <meta charset="utf-8">\n\
+  <meta name="viewport" content="width=device-width, initial-scale=1">\n\
+</head>\n\
+<body>\n\
+  <h1>Conduit Application</h1>\n\
+  <p>If you can see this page, the server is running but the Angular application is not loading properly.</p>\n\
+  <div id="debug-info"></div>\n\
+  <script>\n\
+    document.getElementById("debug-info").innerHTML = \n\
+      "<p>User Agent: " + navigator.userAgent + "</p>" + \n\
+      "<p>Current Path: " + window.location.pathname + "</p>";\n\
+    console.log("Debug page loaded");\n\
+  </script>\n\
+</body>\n\
+</html>' > src/debug.html
+
+# Expose port 8080
+EXPOSE 8080
+
+# Start the HTTP server with detailed logging
+CMD ["http-server", "src", "-p", "8080", "--cors", "-c-1", "-d"]
