@@ -1,0 +1,18 @@
+/* 
+  This is the SCSS file for the ListErrorsComponent.
+  Since the original AngularJS component didn't have any specific styles,
+  we're creating an empty SCSS file that can be used to add styles
+  specific to the list-errors component in the future.
+  
+  The component will use Angular's encapsulation to ensure styles
+  only apply to this component.
+*/
+
+.error-messages {
+  color: #b85c5c;
+  font-weight: bold;
+  
+  li {
+    margin-bottom: 5px;
+  }
+}

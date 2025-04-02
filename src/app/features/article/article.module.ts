@@ -1,56 +1,32 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { ReactiveFormsModule } from '@angular/forms';
 
-// Components
-import { ArticleComponent } from './pages/article/article.component';
-import { ArticleActionsComponent } from './components/article-actions/article-actions.component';
-import { CommentComponent } from './components/comment/comment.component';
-
-// Services
-import { ArticleService } from '../../core/services/article.service';
-import { CommentsService } from '../../core/services/comments.service';
-import { UserService } from '../../core/services/user.service';
-
-// Routing
+import { ArticleComponent } from './article.component';
+import { ArticleActionsComponent } from './article-actions/article-actions.component';
+import { CommentComponent } from './comment/comment.component';
 import { ArticleRoutingModule } from './article-routing.module';
+import { SharedModule } from '../../shared/shared.module';
 
 /**
- * Feature module for the Article functionality
+ * Feature module for article functionality
  * 
- * This module contains components related to viewing an article, including:
- * - The main article page component
- * - Article actions (edit, delete, favorite)
- * - Comment components for displaying and adding comments
+ * This module contains components related to viewing an article:
+ * - ArticleComponent: Main container component for article view
+ * - ArticleActionsComponent: Handles article-specific actions (favorite, follow, etc.)
+ * - CommentComponent: Displays and manages article comments
  * 
- * The module is configured for lazy loading through the ArticleRoutingModule
- * which defines the routes for viewing individual articles.
+ * The module is designed to be lazy-loaded through the routing configuration
  */
 @NgModule({
   imports: [
-    // Angular built-in modules
     CommonModule,
     RouterModule,
-    ReactiveFormsModule,
-    
-    // Feature routing module
-    ArticleRoutingModule
+    ArticleRoutingModule,
+    SharedModule
   ],
   declarations: [
-    // Page components
-    ArticleComponent, // Converted from ArticleCtrl
-    
-    // Feature components
-    ArticleActionsComponent,
-    CommentComponent
-  ],
-  providers: [
-    // Any article-specific services would go here
-    // Core services are provided in CoreModule
-  ],
-  exports: [
-    // Export components that might be used in other modules
+    ArticleComponent,
     ArticleActionsComponent,
     CommentComponent
   ]

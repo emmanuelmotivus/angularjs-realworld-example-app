@@ -9,8 +9,6 @@ const routes: Routes = [
     data: {
       title: 'Home'
     }
-    // Note: If there were any resolves in the original config,
-    // they would be implemented as route resolvers here
   }
 ];
 

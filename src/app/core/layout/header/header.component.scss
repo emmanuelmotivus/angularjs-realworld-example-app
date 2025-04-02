@@ -1,0 +1,28 @@
+/* 
+ * Header component styles
+ * 
+ * This file contains styles specific to the application header component.
+ * The header component is part of the core layout and appears on all pages.
+ */
+
+// Variables can be defined here or imported from a global styles file
+// For example:
+// @import '../../../styles/variables';
+
+// Header container styles
+:host {
+  display: block;
+  width: 100%;
+}
+
+// Any additional styles for the header component would go here
+// These would typically include styles for:
+// - Navigation links
+// - Logo
+// - User profile dropdown
+// - Mobile responsiveness
+// - etc.
+
+// Note: Most styling is likely handled by Bootstrap or another CSS framework
+// as indicated by the original application structure. This file would contain
+// only custom overrides or additional styles needed.

@@ -4,12 +4,16 @@ import { Article } from '../../../core/models/article.model';
 /**
  * ArticlePreviewComponent
  * 
- * This component displays a preview of an article in a list.
- * It's been migrated from the AngularJS component that used the '=' binding
- * to an Angular component using the @Input decorator for one-way binding.
+ * This component displays a preview of an article, including:
+ * - Article metadata (author, date)
+ * - Title and description
+ * - Favorite button and tag list
  * 
- * The component receives an Article object and renders its preview information
- * including title, description, author details, and favorite status.
+ * Migration notes:
+ * - Converted from AngularJS component to Angular component
+ * - Changed bindings: '=' to @Input() for one-way binding
+ * - Added proper TypeScript typing with Article interface
+ * - External template reference maintained but path updated to follow Angular conventions
  */
 @Component({
   selector: 'app-article-preview',
@@ -17,14 +21,14 @@ import { Article } from '../../../core/models/article.model';
   styleUrls: ['./article-preview.component.scss']
 })
 export class ArticlePreviewComponent implements OnInit {
-  // Using @Input() instead of AngularJS bindings
-  // Converting the two-way binding '=' to one-way input binding
-  @Input() article!: Article;
+  // Convert AngularJS two-way binding '=' to Angular @Input()
+  // In Angular, inputs are one-way by default
+  @Input() article: Article;
 
   constructor() { }
 
   ngOnInit(): void {
-    // Initialization logic if needed
-    // This replaces any $onInit logic from AngularJS
+    // Initialize component if needed
+    // Equivalent to $onInit in AngularJS
   }
 }

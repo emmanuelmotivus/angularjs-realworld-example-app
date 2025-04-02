@@ -1,0 +1,46 @@
+/* 
+ * This is the SCSS file for the article-actions component.
+ * It contains styles for the article action buttons (edit, delete)
+ * that appear on article pages when the user is the author.
+ */
+
+.article-actions {
+  padding: 1.5rem 0;
+  text-align: center;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  margin: 1.5rem 0 3rem;
+
+  .btn {
+    margin-right: 0.5rem;
+    
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.btn-outline-danger {
+  color: #b85c5c;
+  border-color: #b85c5c;
+  
+  &:hover {
+    background-color: #b85c5c;
+    color: white;
+  }
+  
+  &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+}
+
+.btn-outline-secondary {
+  color: #ccc;
+  border-color: #ccc;
+  
+  &:hover {
+    background-color: #ccc;
+    color: white;
+  }
+}

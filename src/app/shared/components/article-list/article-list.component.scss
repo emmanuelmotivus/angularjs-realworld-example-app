@@ -1,0 +1,43 @@
+/* article-list.component.scss */
+
+/* Styling for the article list component */
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* Loading indicator styles */
+.article-preview.loading {
+  padding: 1.5rem 0;
+}
+
+/* Empty list message styling */
+.article-preview.no-articles {
+  padding: 1.5rem 0;
+  text-align: center;
+  color: #999;
+}
+
+/* Pagination container */
+.pagination-container {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+/* Individual article preview styling */
+.article-preview {
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 1.5rem 0;
+
+  &:last-child {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .article-preview {
+    padding: 1rem 0;
+  }
+}
