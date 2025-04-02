@@ -24,14 +24,14 @@
       "@core/*": ["src/app/core/*"],
       "@shared/*": ["src/app/shared/*"],
       "@environments/*": ["src/environments/*"],
-      "@features/*": ["src/app/features/*"],
-      "@layout/*": ["src/app/layout/*"]
+      "@features/*": ["src/app/features/*"]
     },
-    "allowSyntheticDefaultImports": true,
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    "strictNullChecks": true,
-    "skipLibCheck": true
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "noImplicitAny": false,
+    "strictPropertyInitialization": false,
+    "useDefineForClassFields": false
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

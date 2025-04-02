@@ -1,0 +1,40 @@
+/* 
+ * Footer component styles
+ * This file contains styles specific to the footer component
+ * Migrated from AngularJS to Angular 12
+ */
+
+// Footer container styles
+:host {
+  display: block;
+  margin-top: 3rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  background-color: #f3f3f3;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+// Attribution link styles
+.attribution {
+  text-align: center;
+  margin-bottom: 0;
+  
+  a {
+    color: #5cb85c;
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// Copyright text styles
+.copyright {
+  margin-bottom: 0;
+  font-size: 0.8rem;
+  color: #999;
+  text-align: center;
+}

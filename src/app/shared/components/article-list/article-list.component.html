@@ -1,7 +1,7 @@
 <div class="article-preview" *ngIf="loading">
   <div class="article-meta">
     <div class="info">
-      Loading articles...
+      <span class="author">Loading articles...</span>
     </div>
   </div>
 </div>
@@ -11,6 +11,7 @@
     <a [routerLink]="['/profile', article.author.username]">
       <img [src]="article.author.image" />
     </a>
+    
     <div class="info">
       <a [routerLink]="['/profile', article.author.username]" class="author">
         {{ article.author.username }}
@@ -19,6 +20,7 @@
         {{ article.createdAt | date: 'longDate' }}
       </span>
     </div>
+    
     <app-favorite-button
       [article]="article"
       class="pull-xs-right">
@@ -37,13 +39,19 @@
   </a>
 </div>
 
-<div class="article-preview" *ngIf="list.length === 0 && !loading">
+<div class="article-preview" *ngIf="!loading && list.length === 0">
   No articles are here... yet.
 </div>
 
-<app-pagination
-  *ngIf="list.length > 0 && !loading"
-  [totalPages]="listConfig.totalPages"
-  [currentPage]="listConfig.currentPage"
-  (setPage)="setPageTo($event)">
-</app-pagination>
+<nav [hidden]="!loading && list.length === 0">
+  <ul class="pagination">
+    <li class="page-item"
+        [class.active]="pageNumber === listConfig.currentPage"
+        *ngFor="let pageNumber of [].constructor(listConfig.totalPages); let i = index">
+      <a class="page-link"
+         (click)="setPageTo(i + 1)">
+        {{ i + 1 }}
+      </a>
+    </li>
+  </ul>
+</nav>

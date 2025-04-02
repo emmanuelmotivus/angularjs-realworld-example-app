@@ -5,41 +5,37 @@ import { environment } from './environments/environment';
 
 /**
  * This is the main entry point for the Angular application.
- * It replaces the AngularJS bootstrap process from the original app.js
+ * It replaces the AngularJS bootstrap process with Angular's platformBrowserDynamic.
  * 
  * Key migration changes:
+ * - Removed direct angular.bootstrap call in favor of platformBrowserDynamic
  * - Removed all AngularJS module imports and declarations
- * - Replaced angular.bootstrap with Angular's platformBrowserDynamic
- * - Added environment configuration for production mode
- * - All modules are now imported and declared in AppModule instead of here
- * - Removed window.app global reference as it's not needed in Angular
- * - Constants, config and run blocks are now handled in various Angular services and modules
+ * - Module imports are now handled in AppModule and feature modules
+ * - Constants are now provided through environment or DI system
+ * - Strict DI is enabled by default in Angular's AOT compilation
  */
 
-// Enable production mode if we're in production environment
 if (environment.production) {
   enableProdMode();
 }
 
 // Bootstrap the Angular application with the root AppModule
-// This replaces the angular.bootstrap call from the original AngularJS app
-platformBrowserDynamic().bootstrapModule(AppModule)
-  .catch(err => console.error('Application initialization failed:', err));
+// This replaces the AngularJS angular.bootstrap(document, ['app'], { strictDi: true })
+platformBrowserDynamic()
+  .bootstrapModule(AppModule, {
+    // Preserves strictDi behavior from the original AngularJS app
+    // Angular uses AOT compilation which enforces strict DI by default
+  })
+  .catch(err => console.error('Application bootstrap failed:', err));
 
 /**
- * Note: The AppModule (in app.module.ts) now imports all the feature modules that
- * were previously imported in the AngularJS app:
- * - LayoutModule (formerly 'app.layout')
- * - SharedModule (formerly 'app.components')
- * - HomeModule (formerly 'app.home')
- * - ProfileModule (formerly 'app.profile')
- * - ArticleModule (formerly 'app.article')
- * - CoreModule (formerly 'app.services')
- * - AuthModule (formerly 'app.auth')
- * - SettingsModule (formerly 'app.settings')
- * - EditorModule (formerly 'app.editor')
- * 
- * The ui-router dependency is replaced with Angular Router
- * The templates are now handled by Angular's component architecture
- * Constants are now provided through environment files or injection tokens
+ * Note: The following modules from the AngularJS app are now imported in their respective Angular modules:
+ * - 'ui.router' -> Angular Router (@angular/router) in app-routing.module.ts
+ * - 'templates' -> Angular now bundles templates with components
+ * - 'app.layout' -> Layout components in layout module
+ * - 'app.components' -> Shared components in shared module
+ * - 'app.home', 'app.profile', 'app.article', etc. -> Feature modules in the features directory
+ * - 'app.services' -> Services in core module or feature modules
+ * - 'app.auth' -> Auth module and services in core/auth
+ * - Constants are now in environment.ts or provided through DI
  */

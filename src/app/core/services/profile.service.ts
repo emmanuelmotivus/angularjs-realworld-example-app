@@ -7,7 +7,9 @@ import { throwError } from 'rxjs';
 // Import environment configuration instead of AppConstants
 import { environment } from '../../../environments/environment';
 
-// Define Profile interface for type safety
+/**
+ * Interface for Profile data returned from the API
+ */
 export interface Profile {
   username: string;
   bio: string;
@@ -15,38 +17,38 @@ export interface Profile {
   following: boolean;
 }
 
-// Response interfaces for type safety
+/**
+ * Interface for API responses containing profile data
+ */
 interface ProfileResponse {
   profile: Profile;
 }
 
 /**
- * Profile service responsible for managing user profile operations
+ * ProfileService - Handles user profile operations
  * 
- * Migration notes:
- * - Converted from AngularJS service to Angular Injectable service
+ * Migrated from AngularJS Profile service to Angular service with the following changes:
+ * - Converted from AngularJS class to Angular @Injectable service
  * - Replaced $http with Angular's HttpClient
- * - Converted promise-based API to Observable-based API
+ * - Converted Promise-based API to Observable-based API
  * - Added TypeScript interfaces for better type safety
- * - Implemented error handling with RxJS operators
- * - Made service tree-shakable with providedIn: 'root'
+ * - Implemented proper error handling with RxJS
+ * - Made the service tree-shakable with providedIn: 'root'
  */
 @Injectable({
   providedIn: 'root' // Makes the service tree-shakable
 })
 export class ProfileService {
   // API URL from environment configuration
-  private apiUrl = environment.api_url;
+  private apiUrl = environment.api;
 
-  constructor(
-    private http: HttpClient
-  ) {}
+  constructor(private http: HttpClient) {}
 
   /**
    * Get a user's profile by username
    * 
-   * @param username The username to fetch profile for
-   * @returns Observable with profile data
+   * @param username The username to fetch the profile for
+   * @returns Observable with the profile data
    */
   get(username: string): Observable<Profile> {
     return this.http.get<ProfileResponse>(`${this.apiUrl}/profiles/${username}`)
@@ -63,8 +65,8 @@ export class ProfileService {
   /**
    * Follow a user
    * 
-   * @param username The username to follow
-   * @returns Observable with updated profile data
+   * @param username The username of the user to follow
+   * @returns Observable with the updated profile data
    */
   follow(username: string): Observable<ProfileResponse> {
     return this.http.post<ProfileResponse>(`${this.apiUrl}/profiles/${username}/follow`, {})
@@ -79,8 +81,8 @@ export class ProfileService {
   /**
    * Unfollow a user
    * 
-   * @param username The username to unfollow
-   * @returns Observable with updated profile data
+   * @param username The username of the user to unfollow
+   * @returns Observable with the updated profile data
    */
   unfollow(username: string): Observable<ProfileResponse> {
     return this.http.delete<ProfileResponse>(`${this.apiUrl}/profiles/${username}/follow`)

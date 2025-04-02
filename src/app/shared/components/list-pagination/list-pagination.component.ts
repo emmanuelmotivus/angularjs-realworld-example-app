@@ -3,38 +3,40 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 /**
  * ListPaginationComponent
  * 
- * This component handles pagination for lists of articles or other items.
+ * This component handles pagination for lists of items.
  * It displays page numbers and allows users to navigate between pages.
  * 
  * Migration notes:
- * - Converted AngularJS component to Angular @Component
- * - Replaced $scope.$emit with an @Output EventEmitter
+ * - Converted from AngularJS component to Angular @Component
+ * - Replaced $scope.$emit with an EventEmitter for better parent-child communication
  * - Changed bindings to @Input properties
- * - Removed AngularJS DI and controller
  * - Added proper TypeScript types
+ * - Implemented OnInit interface for initialization logic
+ * - Moved template to external HTML file
  */
 @Component({
   selector: 'app-list-pagination',
-  templateUrl: './list-pagination.component.html'
+  templateUrl: './list-pagination.component.html',
+  styleUrls: ['./list-pagination.component.scss']
 })
 export class ListPaginationComponent implements OnInit {
-  // Convert AngularJS two-way bindings to Angular @Input properties
+  // Input properties that replace AngularJS bindings
   @Input() totalPages: number = 0;
   @Input() currentPage: number = 1;
   
-  // Replace $scope.$emit with an EventEmitter
+  // Output event that replaces $scope.$emit
   @Output() setPage = new EventEmitter<number>();
 
   constructor() { }
 
   ngOnInit(): void {
-    // Initialize component (replaces $onInit from AngularJS)
+    // Initialization logic if needed
   }
 
   /**
-   * Creates an array of page numbers based on the total number of pages
+   * Generates an array of page numbers based on the total number of pages
    * @param total The total number of pages
-   * @returns An array of page numbers
+   * @returns An array of page numbers starting from 1
    */
   pageRange(total: number): number[] {
     const pages: number[] = [];
@@ -47,11 +49,10 @@ export class ListPaginationComponent implements OnInit {
   }
 
   /**
-   * Changes the current page and emits an event to notify parent components
+   * Changes the current page and emits an event to notify the parent component
    * @param number The page number to change to
    */
   changePage(number: number): void {
-    // Replace $scope.$emit with EventEmitter
     this.setPage.emit(number);
   }
 }

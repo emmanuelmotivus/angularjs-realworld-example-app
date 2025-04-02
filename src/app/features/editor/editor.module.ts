@@ -1,44 +1,29 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { EditorComponent } from './editor.component';
 import { EditorRoutingModule } from './editor-routing.module';
+import { EditorComponent } from './editor.component';
 import { SharedModule } from '../../shared/shared.module';
 
 /**
  * Editor Feature Module
  * 
- * This module encapsulates the article editor functionality, which was previously
- * managed by the AngularJS EditorCtrl controller and related components.
+ * This module encapsulates the article editor functionality, allowing users to create
+ * and edit articles. It includes the editor component and necessary form handling.
  * 
- * Features:
- * - Article creation and editing
- * - Form validation
- * - Tag management
- * 
- * The module is configured for lazy loading through the EditorRoutingModule,
- * which defines the routes for creating new articles and editing existing ones.
+ * The module is designed to be lazy-loaded through the routing configuration.
  */
 @NgModule({
-  imports: [
-    // Angular core modules
-    CommonModule,
-    ReactiveFormsModule,
-    RouterModule,
-    
-    // Feature-specific routing
-    EditorRoutingModule,
-    
-    // Shared components, directives, and pipes
-    SharedModule
-  ],
   declarations: [
-    // Components
     EditorComponent
   ],
-  // No providers are defined at the module level as services should be provided in the core module
-  // or with providedIn: 'root' for application-wide singleton services
+  imports: [
+    CommonModule, // For common directives like ngIf, ngFor
+    FormsModule, // For template-driven forms
+    ReactiveFormsModule, // For reactive forms
+    EditorRoutingModule, // Feature-specific routing
+    SharedModule // For shared components, directives, and pipes
+  ]
 })
 export class EditorModule { }

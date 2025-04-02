@@ -1,0 +1,70 @@
+/* 
+ * This is the SCSS file for the comment component
+ * It contains styles specific to the article comment display
+ */
+
+:host {
+  display: block;
+  position: relative;
+  margin-bottom: 0.75rem;
+  padding: 1rem;
+  border-radius: 0.25rem;
+  background-color: #f8f9fa;
+}
+
+.card {
+  margin-bottom: 0.75rem;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.25rem;
+}
+
+.card-block {
+  padding: 1.25rem;
+}
+
+.card-footer {
+  padding: 0.75rem 1.25rem;
+  background-color: #f7f7f9;
+  border-top: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.comment-author {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 0.5rem;
+}
+
+.comment-author-img {
+  height: 20px;
+  width: 20px;
+  border-radius: 30px;
+  margin-right: 5px;
+}
+
+.date-posted {
+  display: inline-block;
+  vertical-align: middle;
+  color: #bbb;
+  font-size: 0.8rem;
+}
+
+.mod-options {
+  float: right;
+  color: #333;
+  font-size: 1rem;
+  
+  span {
+    cursor: pointer;
+    margin-left: 0.5rem;
+    
+    &:hover {
+      color: #5cb85c;
+    }
+  }
+}
+
+p {
+  margin-bottom: 0;
+  font-size: 0.9rem;
+  line-height: 1.3rem;
+}

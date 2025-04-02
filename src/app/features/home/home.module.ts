@@ -1,64 +1,27 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
 
-// Components
+import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
-import { ArticleListComponent } from './components/article-list/article-list.component';
-import { TagListComponent } from './components/tag-list/tag-list.component';
-import { FeedToggleComponent } from './components/feed-toggle/feed-toggle.component';
-
-// Services
-import { HomeService } from './services/home.service';
-import { TagsService } from '../../core/services/tags.service';
-
-// Routes
-import { HOME_ROUTES } from './home-routing.module';
-
-// Shared components and modules
 import { SharedModule } from '../../shared/shared.module';
 
 /**
  * Home Feature Module
  * 
- * This module contains all components related to the home page of the application.
- * It includes:
- * - The main home page component
- * - Article list component for displaying articles
- * - Feed toggle for switching between global and user feeds
- * - Tag list component for displaying and selecting tags
+ * This module encapsulates all functionality related to the home page.
+ * It uses lazy loading through the HomeRoutingModule for better performance.
  * 
- * The module is configured for lazy loading through the main app routing module.
- * It imports SharedModule to access common components like article-preview, 
- * pagination, and loading indicators.
+ * Components:
+ * - HomeComponent: Main component for the home page (converted from HomeCtrl)
  */
 @NgModule({
-  imports: [
-    // Angular built-in modules
-    CommonModule,
-    
-    // Feature routing
-    RouterModule.forChild(HOME_ROUTES),
-    
-    // Application shared module (contains common components, directives, and pipes)
-    SharedModule
-  ],
   declarations: [
-    // Main page component
-    HomeComponent,
-    
-    // Feature-specific components
-    ArticleListComponent,
-    TagListComponent,
-    FeedToggleComponent
+    HomeComponent
   ],
-  providers: [
-    // Feature-specific services
-    HomeService,
-    
-    // Services needed by this module but defined in core
-    // (They're already provided in CoreModule, but listed here for clarity)
-    // TagsService
+  imports: [
+    CommonModule, // For ngIf, ngFor and other common directives
+    HomeRoutingModule, // Handles routing configuration for the home feature
+    SharedModule // For shared components, directives, and pipes
   ]
 })
 export class HomeModule { }

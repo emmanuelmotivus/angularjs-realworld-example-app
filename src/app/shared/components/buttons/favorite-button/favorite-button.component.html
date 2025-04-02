@@ -1,0 +1,12 @@
+<button
+  class="btn btn-sm"
+  [class.btn-outline-primary]="!article.favorited"
+  [class.btn-primary]="article.favorited"
+  (click)="submit()"
+  [disabled]="isSubmitting">
+  <i class="ion-heart"></i>
+  <ng-container *ngIf="article.favoritesCount > 0">
+    &nbsp; {{ article.favoritesCount }}
+  </ng-container>
+  <ng-content></ng-content>
+</button>

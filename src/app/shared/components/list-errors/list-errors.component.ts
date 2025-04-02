@@ -7,13 +7,13 @@ import { Component, Input, OnInit } from '@angular/core';
  * 
  * Migration notes:
  * - Converted from AngularJS component to Angular component
- * - Changed two-way binding '=' to Angular @Input property
- * - Moved template to external HTML file (handled by Angular CLI)
- * - Added TypeScript interface for errors object structure
- * - Added OnInit interface for proper lifecycle management
+ * - Changed '=' binding to @Input() property
+ * - Created a separate HTML template file
+ * - Added TypeScript interface for errors structure
+ * - Implemented OnInit interface for initialization logic
  */
 
-// Interface to define the structure of the errors object
+// Interface to define the structure of errors
 interface Errors {
   [key: string]: string[];
 }
@@ -23,11 +23,10 @@ interface Errors {
   templateUrl: './list-errors.component.html'
 })
 export class ListErrorsComponent implements OnInit {
-  // Input property to receive errors from parent component
-  // In Angular, we use @Input() for one-way binding instead of AngularJS's '='
+  // Convert AngularJS '=' two-way binding to Angular @Input
   @Input() errors: Errors;
   
-  // Property to store the error messages for display in the template
+  // Property to store the error messages for display
   errorList: string[] = [];
 
   constructor() {}
@@ -36,17 +35,19 @@ export class ListErrorsComponent implements OnInit {
     this.updateErrorList();
   }
 
-  // This method is called whenever the errors input changes
+  // Watch for changes to the errors input
   ngOnChanges() {
     this.updateErrorList();
   }
 
-  // Helper method to transform the errors object into a flat array of error messages
-  private updateErrorList() {
+  /**
+   * Processes the errors object and converts it to a flat array of error messages
+   */
+  updateErrorList() {
     this.errorList = [];
     
     if (this.errors) {
-      // Loop through each error key and add all associated messages to the errorList
+      // For each error key, add all associated error messages to the errorList
       for (const key in this.errors) {
         if (this.errors.hasOwnProperty(key)) {
           this.errors[key].forEach((error) => {
